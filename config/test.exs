@@ -8,7 +8,7 @@ use Mix.Config
 config :dudo, Dudo.Repo,
   username: "postgres",
   password: "postgres",
-  database: "dudo_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "dudo_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
