@@ -1,0 +1,4 @@
+- find player by id
+
+- create game
+- find game by id
