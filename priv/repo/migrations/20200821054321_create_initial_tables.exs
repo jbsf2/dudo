@@ -8,7 +8,7 @@ defmodule Dudo.Repo.Migrations.CreateInitialTables do
     end
 
     create table("games") do
-      add :created_by, references("players")
+      add :creator_id, references("players")
       timestamps()
     end
 

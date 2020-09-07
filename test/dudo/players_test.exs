@@ -9,6 +9,13 @@ defmodule Dudo.PlayersTest do
     assert player.name == "Player 1"
   end
 
+  test "create_player! creates a player" do
+    player = %{name: "Player 1"} |> Players.create_player!()
+
+    assert player.name == "Player 1"
+  end
+
+
   test "get_player finds an existing player" do
     {:ok, player} = %{name: "Player 1"} |> Players.create_player()
 
@@ -19,10 +26,4 @@ defmodule Dudo.PlayersTest do
 
   end
 
-#  test "create_user! creates a user" do
-#    user = Test.Fixtures.user_attrs("alice") |> Accounts.create_user!()
-#
-#    assert user.tid == "alice"
-#    assert user.username == "alice"
-#  end
 end
