@@ -3,17 +3,10 @@
 <body>
 Welcome!
 
-<form action="/login" method="post">
-    <label for="name">What's your name?</label><br>
-    <input type="text" id="name" name="name">
-    <input type="submit"/>
-</form>
-
 <%= form_for @conn, Routes.login_path(@conn, :create), [as: :login], fn f -> %>
     <%= text_input f, :name %>
     <%= submit "Submit" %>
 <% end %>
-
 
 
 </body>

@@ -1,13 +1,25 @@
 defmodule DudoWeb.LoginControllerTest do
   use DudoWeb.ConnCase
 
+  @create_attrs
+
   test "GET /login", %{conn: conn} do
     conn = get(conn, "/login")
     assert html_response(conn, 200) =~ "What's your name?"
   end
 
-  test "POST /login", %{conn: conn} do
-    conn = post(conn, "/login")
-    assert html_response(conn, 200)
+  describe "post login" do
+
+    test "when successful, sets the player session data and redirects", %{conn: conn} do
+      conn = post(conn, "/login", post: %{player_name: "Player 1"})
+
+      player_id = Plug.Conn.get_session(conn, "player_id")
+      player_name = Plug.Conn.get_session(conn, "player_name")
+
+      assert player_id != nil
+      assert player_name == "Player 1"
+      assert redirected_to(conn, 302) == "/welcome"
+    end
+
   end
 end
