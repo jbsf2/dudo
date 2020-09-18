@@ -1,9 +1,9 @@
-defmodule Dudo.Players.Player do
+defmodule Dudo.Games.Player do
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  alias Dudo.Players.Player
+  alias Dudo.Games.Player
 
   schema "players" do
     field :name, :string

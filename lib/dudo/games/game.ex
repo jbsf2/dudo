@@ -4,13 +4,15 @@ defmodule Dudo.Games.Game do
   import Ecto.Changeset
 
   alias Dudo.Games.Game
-  alias Dudo.Players.Player
+  alias Dudo.Games.Player
+  alias Dudo.Games.Hand
 
   schema "games" do
 
     timestamps()
 
     belongs_to :creator, Player
+    has_many :hands, Hand
   end
 
   @required_attrs ~w{creator_id}a
