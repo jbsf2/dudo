@@ -14,4 +14,14 @@ defmodule Dudo.GameTest do
     [%Dudo.Player{name: player_name}] = game.players
     assert player_name == "john"
   end
+
+  test "losing dice" do
+    game = Game.add_player(%Dudo.Game{}, "john")
+    |> Game.add_player("marcia")
+    |> Game.lose_dice("marcia")
+
+    marcia = Enum.find(game.players, fn player -> player.name == "marcia" end)
+    assert length(marcia.dice) == 4
+  end
+
 end

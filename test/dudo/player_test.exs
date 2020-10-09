@@ -7,7 +7,6 @@ defmodule Dudo.PlayerTest do
     player = Player.new_player("Jill")
     dice = player.dice
     assert length(dice) == 5
-    assert player.id != nil
   end
 
   test "random_dice returns the right count" do

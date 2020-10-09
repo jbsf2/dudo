@@ -1,13 +1,13 @@
 defmodule Dudo.Player do
-  @enforce_keys [:name, :dice, :id]
-  defstruct [:name, :id, dice: []]
+  @enforce_keys [:name, :dice]
+  defstruct [:name, dice: []]
 
   def new_player(name, dice_count \\ 5) do
-    %Dudo.Player{name: name, id: :rand.uniform(100_000), dice: random_dice(dice_count)}
+    %Dudo.Player{name: name, dice: random_dice(dice_count)}
   end
 
   def lose_dice(player) do
-    %Dudo.Player{name: player.name, id: player.id, dice: random_dice(length(player.dice) - 1)}
+    %Dudo.Player{name: player.name, dice: random_dice(length(player.dice) - 1)}
   end
 
   def random_dice(count) when count <= 0 do [] end
@@ -17,7 +17,7 @@ defmodule Dudo.Player do
   end
 
   def shuffle_dice(player) do
-    %Dudo.Player{name: player.name, id: player.id, dice: random_dice(length(player.dice))}
+    %Dudo.Player{name: player.name, dice: random_dice(length(player.dice))}
   end
 
 end
