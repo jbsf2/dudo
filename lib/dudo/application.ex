@@ -7,8 +7,6 @@ defmodule Dudo.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Dudo.Repo,
       # Start the Telemetry supervisor
       DudoWeb.Telemetry,
       # Start the PubSub system

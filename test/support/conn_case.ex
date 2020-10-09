@@ -31,12 +31,7 @@ defmodule DudoWeb.ConnCase do
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Dudo.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Dudo.Repo, {:shared, self()})
-    end
+  setup do
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end

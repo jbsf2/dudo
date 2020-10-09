@@ -7,9 +7,6 @@
 # General application configuration
 use Mix.Config
 
-config :dudo,
-  ecto_repos: [Dudo.Repo]
-
 # Configures the endpoint
 config :dudo, DudoWeb.Endpoint,
   url: [host: "localhost"],
