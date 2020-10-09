@@ -1,7 +1,8 @@
 
 <html lang="en">
 <body>
-Welcome!
+
+What's your name?
 
 <%= form_for @conn, Routes.login_path(@conn, :create), [as: :login], fn f -> %>
     <%= text_input f, :name %>

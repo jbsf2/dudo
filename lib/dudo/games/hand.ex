@@ -5,7 +5,6 @@ defmodule Dudo.Games.Hand do
 
   alias Dudo.Games.Player
   alias Dudo.Games.Game
-  alias Dudo.Games.Hand
 
   schema "hands" do
     field :dice, {:array, :integer}

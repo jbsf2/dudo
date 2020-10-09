@@ -1,10 +1,9 @@
 defmodule DudoWeb.LoginControllerTest do
   use DudoWeb.ConnCase
 
-  @create_attrs
-
   test "GET /login", %{conn: conn} do
     conn = get(conn, "/login")
+
     assert html_response(conn, 200) =~ "What's your name?"
   end
 

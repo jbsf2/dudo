@@ -3,7 +3,6 @@ defmodule Dudo.Games.Game do
 
   import Ecto.Changeset
 
-  alias Dudo.Games.Game
   alias Dudo.Games.Player
   alias Dudo.Games.Hand
 
