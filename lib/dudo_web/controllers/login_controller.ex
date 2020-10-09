@@ -5,7 +5,7 @@ defmodule DudoWeb.LoginController do
     render(conn, "new.html")
   end
 
-  def create(conn, %{"post" => %{"player_name" => player_name}}) do
+  def create(conn, %{"login" => %{"player_name" => player_name}}) do
     player = Dudo.Player.new_player(player_name)
 
     conn

@@ -10,7 +10,7 @@ defmodule DudoWeb.LoginControllerTest do
   describe "post login" do
 
     test "when successful, sets the player session data and redirects", %{conn: conn} do
-      conn = post(conn, "/login", post: %{player_name: "Player 1"})
+      conn = post(conn, "/login", login: %{player_name: "Player 1"})
 
       player_name = Plug.Conn.get_session(conn, "player_name")
 

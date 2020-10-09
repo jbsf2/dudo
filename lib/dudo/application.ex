@@ -12,9 +12,11 @@ defmodule Dudo.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Dudo.PubSub},
       # Start the Endpoint (http/https)
-      DudoWeb.Endpoint
+      DudoWeb.Endpoint,
       # Start a worker by calling: Dudo.Worker.start_link(arg)
       # {Dudo.Worker, arg}
+
+      {Registry, keys: :unique, name: :game_id_registry}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -18,8 +18,8 @@ defmodule DudoWeb.Router do
 
     get "/login", LoginController, :new
     post "/login", LoginController, :create
-
     get "/welcome", WelcomeController, :show
+    resources "/games", GameController
   end
 
   # Other scopes may use custom stacks.

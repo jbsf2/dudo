@@ -1,14 +1,19 @@
 
 <html lang="en">
+
 <body>
 
 What's your name?
 
 <%= form_for @conn, Routes.login_path(@conn, :create), [as: :login], fn f -> %>
-    <%= text_input f, :name %>
+    <%= text_input f, :player_name, class: "focus" %>
     <%= submit "Submit" %>
 <% end %>
 
-
+    <script>
+        window.onload = function() {
+            document.getElementsByClassName("focus")[0].focus();
+        }
+    </script>
 </body>
 </html>

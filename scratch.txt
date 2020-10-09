@@ -1,4 +1,20 @@
-- find player by id
 
-- create game
-- find game by id
+
+Show up, enter your name
+Option to create a game
+Option to join a game
+    - join via code
+    - join via link
+
+In a game:
+players see other players in a specific order
+    can see their own dice values
+    can see other player's dice count
+players can lose a dice
+players can gain a dice
+players see a log of events
+    - so and so lost a dice
+    - so and so joined game
+When someone gets down to one dice, they can choose open or closed
+If open, players can see other players' dice, but not their own
+If closed, normal game
