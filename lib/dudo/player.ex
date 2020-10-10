@@ -16,7 +16,7 @@ defmodule Dudo.Player do
     for _ <- 1..count, do: :rand.uniform(6)
   end
 
-  def shuffle_dice(player) do
+  def shake_dice(player) do
     %Dudo.Player{name: player.name, dice: random_dice(length(player.dice))}
   end
 

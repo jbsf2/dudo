@@ -37,10 +37,10 @@ defmodule Dudo.PlayerTest do
     assert length(player.dice) == 0
   end
 
-  test "shuffle_dice" do
+  test "shake_dice" do
     player = Player.new_player("Jill", 100)
-    shuffled = Player.shuffle_dice(player)
+    shaked = Player.shake_dice(player)
 
-    assert player.dice != shuffled.dice
+    assert player.dice != shaked.dice
   end
 end

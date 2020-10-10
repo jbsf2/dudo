@@ -1,6 +1,9 @@
-defmodule Dudo.GameApi do
+defmodule Dudo.GameService do
+
+  alias Dudo.Game
+
   def start() do
-    pid = spawn(fn -> Dudo.GameServer.run(%Dudo.Game{}) end)
+    pid = spawn(fn -> run(%Dudo.Game{}) end)
     game_id = new_game_id()
     Registry.put_meta(:game_id_registry, {game_id}, pid)
     game_id
@@ -27,6 +30,13 @@ defmodule Dudo.GameApi do
     end
   end
 
+  def state_for_player(game_id, player_name) do
+    game = state(game_id)
+    current_player = Enum.find(game.players, fn player -> player.name == player_name end)
+    other_players = Enum.filter(game.players, fn player -> player.name != player_name end)
+    {current_player, other_players}
+  end
+
   defp new_game_id do
     min = String.to_integer("1000", 36)
     max = String.to_integer("ZZZZ", 36)
@@ -41,5 +51,21 @@ defmodule Dudo.GameApi do
   defp pid(game_id) do
     {:ok, pid} = Registry.meta(:game_id_registry, {game_id})
     pid
+  end
+
+  defp run(game) do
+    new_game = listen(game)
+    run(new_game)
+  end
+
+  defp listen(game) do
+    receive do
+      {:add_player, player_name} ->
+        Game.add_player(game, player_name)
+      {:lose_dice, player_name} ->
+        Game.lose_dice(game, player_name)
+      {:state, pid} ->
+        send pid, game
+    end
   end
 end

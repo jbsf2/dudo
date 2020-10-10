@@ -1,10 +1,11 @@
 
 <html lang="en">
 <body>
-Welcome, <%= @player_name %>!
 
-<%= form_for @conn, Routes.game_path(@conn, :create), [as: :login], fn f -> %>
-    <%= submit "Start a new game" %>
+Hi <%= @current_player.name %>, here are your dice:
+<ul>
+<%= for dice <- @current_player.dice do %>
+    <li><%= dice %></li>
 <% end %>
 
 </body>
