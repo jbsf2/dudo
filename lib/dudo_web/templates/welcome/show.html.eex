@@ -1,11 +1,7 @@
+<div class="topmargin">
+    Welcome, <%= @player_name %>!
 
-<html lang="en">
-<body>
-Welcome, <%= @player_name %>!
-
-<%= form_for @conn, Routes.game_path(@conn, :create), [as: :login], fn f -> %>
-    <%= submit "Start a new game" %>
-<% end %>
-
-</body>
-</html>
+    <%= form_for @conn, Routes.game_path(@conn, :create), [as: :login], fn f -> %>
+        <%= submit "Start a new game" %>
+    <% end %>
+</div>
