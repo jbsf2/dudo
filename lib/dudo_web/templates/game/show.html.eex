@@ -1,12 +1,69 @@
 
 <html lang="en">
+<head>
+<style>
+
+    li.dice {
+        float: left;
+        margin: 8px;
+        padding: 4px;
+        background-color: #e7e7e7;
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        box-shadow: inset 0 2px white, inset 0 -2px #bbb, inset 2px 0 #d7d7d7, inset -2px 0 #d7d7d7;
+        border-radius: 10%;
+        display: grid;
+        grid-template-areas:
+            "a . c"
+            "e g f"
+            "d . b";
+    }
+
+    span.dot {
+        display: block;
+        align-self:center;
+        justify-self:center;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background-color: #333;
+        box-shadow: inset 0 3px #111, inset 0 -3px #555;
+    }
+
+    span.dot:nth-child(2) {
+        grid-area: b;
+    }
+    span.dot:nth-child(3) {
+        grid-area: c;
+    }
+    span.dot:nth-child(4) {
+        grid-area: d;
+    }
+    span.dot:nth-child(5) {
+        grid-area: e;
+    }
+    span.dot:nth-child(6) {
+        grid-area: f;
+    }
+
+    span.dot:nth-child(odd):last-child {
+        grid-area: g;
+    }
+
+</style>
+</head>
 <body>
 
 Hi <%= @current_player.name %>, here are your dice:
-<ul>
+<ul class="dice">
 <%= for dice <- @current_player.dice do %>
-    <li><%= dice %></li>
+    <li class="dice d<%= dice %>">
+        <%= for dots <- 1..dice do %>
+            <span class="dot"></span>
+        <% end %>
+    </li>
 <% end %>
-
+</ul>
 </body>
 </html>

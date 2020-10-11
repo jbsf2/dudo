@@ -10,6 +10,7 @@ In a game:
 players see other players in a specific order
     can see their own dice values
     can see other player's dice count
+players can Show their dice
 players can lose a dice
 players can gain a dice
 players see a log of events
