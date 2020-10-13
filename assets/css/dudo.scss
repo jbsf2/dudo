@@ -1,21 +1,27 @@
 div.topmargin {
-    margin-top: 200px;
+    margin-top: 20rem;
 }
 
 div.login input[type="text"] {
-    width: 300px;
+    width: 30rem;
     display: block;
+}
+
+div.welcome input[type="text"] {
+    display: inline;
+    width: 9.5rem;
+    margin-right: 1.2rem;
 }
 
 
 li.dice {
     float: left;
-    margin-right: 16px;
-    margin-top: 8px;
-    padding: 4px;
+    margin-right: 1.6rem;
+    margin-top: .8rem;
+    padding: .4rem;
     background-color: #e7e7e7;
-    width: 52px;
-    height: 52px;
+    width: 5.2rem;
+    height: 5.2rem;
     object-fit: contain;
     box-shadow: inset 0 2px white, inset 0 -2px #bbb, inset 2px 0 #d7d7d7, inset -2px 0 #d7d7d7;
     border-radius: 10%;
@@ -30,11 +36,11 @@ span.dot {
     display: block;
     align-self:center;
     justify-self:center;
-    width: 11px;
-    height: 11px;
+    width: 1.1rem;
+    height: 1.1rem;
     border-radius: 50%;
     background-color: #333;
-    box-shadow: inset 0 3px #111, inset 0 -3px #555;
+    box-shadow: inset 0 .3rem #111, inset 0 -.3rem #555;
 }
 
 span.dot:nth-child(2) {

@@ -1,7 +1,14 @@
-<div class="topmargin">
-    Welcome, <%= @player_name %>!
+<div class="welcome topmargin">
+    <h2>Welcome, <%= @player_name %>!</h2>
 
-    <%= form_for @conn, Routes.game_path(@conn, :create), [as: :login], fn f -> %>
+    <%= form_for @conn, Routes.game_path(@conn, :join), [as: :game],fn f -> %>
+        <div>Enter a game code:</div>
+        <%= text_input f, :id %>
+        <%= submit "Go" %>
+    <% end %>
+
+    <%= form_for @conn, Routes.game_path(@conn, :create), fn f -> %>
+        <div>Or:</div>
         <%= submit "Start a new game" %>
     <% end %>
 </div>

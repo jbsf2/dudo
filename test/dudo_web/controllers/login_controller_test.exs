@@ -18,5 +18,13 @@ defmodule DudoWeb.LoginControllerTest do
       assert redirected_to(conn, 302) == "/welcome"
     end
 
+    test "when :after_login_redirect_path is present, redirect to that path", %{conn: conn} do
+      conn = conn
+      |> Plug.Test.init_test_session(after_login_redirect_path: "/redirect_path")
+      |> post("/login", login: %{player_name: "Player 1"})
+
+      assert redirected_to(conn, 302) == "/redirect_path"
+    end
+
   end
 end
