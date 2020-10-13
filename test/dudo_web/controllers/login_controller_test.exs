@@ -24,6 +24,7 @@ defmodule DudoWeb.LoginControllerTest do
       |> post("/login", login: %{player_name: "Player 1"})
 
       assert redirected_to(conn, 302) == "/redirect_path"
+      assert get_session(conn, :after_login_redirect_path) == nil
     end
 
   end
