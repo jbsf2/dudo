@@ -17,7 +17,7 @@ defmodule DudoWeb.GameControllerTest do
     game_id = Plug.Conn.get_session(conn, "game_id")
 
     conn = get(conn, Routes.game_path(conn, :show, game_id))
-    assert html_response(conn, 200) =~ "here are your dice"
+    assert html_response(conn, 200)
   end
 
   test ":show redirects to login when user not logged in", %{conn: conn} do
@@ -25,5 +25,4 @@ defmodule DudoWeb.GameControllerTest do
 
     assert redirected_to(conn, 302) == Routes.login_path(conn, :new)
   end
-
 end

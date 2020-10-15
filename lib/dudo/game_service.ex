@@ -30,13 +30,6 @@ defmodule Dudo.GameService do
     end
   end
 
-  def state_for_player(game_id, player_name) do
-    game = state(game_id)
-    current_player = Enum.find(game.players, fn player -> player.name == player_name end)
-    other_players = Enum.filter(game.players, fn player -> player.name != player_name end)
-    {current_player, other_players}
-  end
-
   defp new_game_id do
     min = String.to_integer("1000", 36)
     max = String.to_integer("ZZZZ", 36)

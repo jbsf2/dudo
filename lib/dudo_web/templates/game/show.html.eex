@@ -1,13 +1,41 @@
 
 <div class="topmargin">
-    Hi <%= @current_player.name %>, here are your dice:
-    <ul class="dice">
-    <%= for dice <- @current_player.dice do %>
-        <li class="dice d<%= dice %>">
-            <%= for dots <- 1..dice do %>
-                <span class="dot"></span>
-            <% end %>
-        </li>
-    <% end %>
-</ul>
+
+    <table class="players">
+        <%= for player <- @players do %>
+            <tr class="player">
+                <td class="player-name"><%= player.name %></td>
+                <td>
+                <%= if player.name == @current_player do %>
+                    <ul>
+                        <%= for dice <- player.dice do %>
+                            <li class="dice d<%= dice %>">
+                                <%= for _dots <- 1..dice do %>
+                                    <span class="dot"></span>
+                                <% end %>
+                            </li>
+                        <% end %>
+                    </ul>
+                <% else %>
+                        <ul>
+                        <%= for _dice <- player.dice do %>
+                            <li class="dice hidden"></li>
+                        <% end %>
+                        </ul>
+                <% end %>
+                </td>
+                <td>
+                    <%= if player.name == @current_player do %>
+                        <%= form_for @conn, Routes.dice_path(@conn, :delete, @game_id, player.name), fn _f -> %>
+                            <input name="_method" type="hidden" value="delete" />
+                            <%= submit "Lose a dice" %>
+                        <% end %>
+                        <%= form_for @conn, Routes.dice_path(@conn, :create, @game_id, player.name), fn _f -> %>
+                            <%= submit "Win a dice" %>
+                        <% end %>
+                    <% end %>
+                </td>
+            </tr>
+        <% end %>
+    </table>
 </div>

@@ -16,12 +16,16 @@ defmodule DudoWeb.GameController do
 
   def show(conn, %{"id" => game_id}) do
     player_name = get_session(conn, :player_name)
-    {current_player, other_players} = GameService.state_for_player(game_id, player_name)
-    render(conn, "show.html", current_player: current_player, other_players: other_players)
+    players = GameService.state(game_id).players
+    render(conn, "show.html", players: players, current_player: player_name, game_id: game_id)
   end
 
   def join(conn, %{"game" => %{"id" => game_id}}) do
-    redirect(conn, to: Routes.game_path(conn, :show, game_id))
+    GameService.add_player(game_id, get_session(conn, :player_name))
+
+    conn
+    |> put_session(:game_id, game_id)
+    |> redirect(to: Routes.game_path(conn, :show, game_id))
   end
 
   def check_login(conn, _opts) do

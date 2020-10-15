@@ -1,3 +1,6 @@
+.container {
+    max-width: 100rem;
+}
 div.topmargin {
     margin-top: 20rem;
 }
@@ -60,4 +63,20 @@ span.dot:nth-child(6) {
 }
 span.dot:nth-child(odd):last-child {
     grid-area: g;
+}
+
+td.player-name {
+    text-align: right;
+    font-size: 2.8rem;
+}
+
+table.players td {
+    border-bottom: none;
+}
+
+table.players form {
+    display: inline;
+    float: left;
+    margin-top: 3.2rem;
+    margin-right: 1.6rem;
 }

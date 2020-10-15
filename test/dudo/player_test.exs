@@ -23,12 +23,13 @@ defmodule Dudo.PlayerTest do
   end
 
   test "lose_dice decrements the dice count, bottoming out at 0" do
-    player = Player.new_player("Jill")
-    |> Player.lose_dice()
-    |> Player.lose_dice()
-    |> Player.lose_dice()
-    |> Player.lose_dice()
-    |> Player.lose_dice()
+    player =
+      Player.new_player("Jill")
+      |> Player.lose_dice()
+      |> Player.lose_dice()
+      |> Player.lose_dice()
+      |> Player.lose_dice()
+      |> Player.lose_dice()
 
     assert length(player.dice) == 0
 

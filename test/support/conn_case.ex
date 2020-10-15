@@ -32,7 +32,6 @@ defmodule DudoWeb.ConnCase do
   end
 
   setup do
-
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

@@ -7,5 +7,4 @@ defmodule DudoWeb.WelcomeControllerTest do
 
     assert html_response(conn, 200) =~ "Welcome, Player 1!"
   end
-
 end
