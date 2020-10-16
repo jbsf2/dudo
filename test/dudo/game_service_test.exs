@@ -11,7 +11,7 @@ defmodule Dudo.GameServiceTest do
     assert player.name == "Bob"
   end
 
-  test "losing a dice" do
+  test "losing and adding dice" do
     game_id = GameService.start()
     GameService.add_player(game_id, "Bob")
     GameService.add_player(game_id, "Alice")
@@ -20,6 +20,12 @@ defmodule Dudo.GameServiceTest do
     game = GameService.state(game_id)
     bob = Enum.find(game.players, fn player -> player.name == "Bob" end)
     assert length(bob.dice) == 4
+
+    GameService.add_dice(game_id, "Bob")
+
+    game = GameService.state(game_id)
+    bob = Enum.find(game.players, fn player -> player.name == "Bob" end)
+    assert length(bob.dice) == 5
   end
 
   test "querying state doesn't lose state" do

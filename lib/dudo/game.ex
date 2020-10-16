@@ -15,4 +15,16 @@ defmodule Dudo.Game do
 
     %Dudo.Game{players: players}
   end
+
+  def add_dice(game, player_name) do
+    players = Enum.map(game.players, fn player ->
+      if (player.name == player_name), do: Player.add_dice(player), else: player
+    end)
+
+    %Dudo.Game{players: players}
+  end
+
+  def find_player(game, player_name) do
+    Enum.find(game.players, fn player -> player.name == player_name end)
+  end
 end

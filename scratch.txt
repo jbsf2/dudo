@@ -1,21 +1,19 @@
 
 
-Show up, enter your name
-Option to create a game
-Option to join a game
-    - join via code
-    - join via link
 
-In a game:
-players see other players in a specific order
-    can see their own dice values
-    can see other player's dice count
-players can Show their dice
+
+
 players can lose a dice
 players can gain a dice
+players can Show their dice
+players can shake their dice
 players see a log of events
     - so and so lost a dice
     - so and so joined game
-When someone gets down to one dice, they can choose open or closed
+Anyone can choose open or closed
 If open, players can see other players' dice, but not their own
 If closed, normal game
+Prevent name collisions
+sanitize inputs
+deploy
+montado

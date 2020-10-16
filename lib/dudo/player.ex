@@ -10,6 +10,10 @@ defmodule Dudo.Player do
     %Dudo.Player{name: player.name, dice: random_dice(length(player.dice) - 1)}
   end
 
+  def add_dice(player) do
+    %Dudo.Player{name: player.name, dice: random_dice(length(player.dice) + 1)}
+  end
+
   def random_dice(count) when count <= 0 do [] end
 
   def random_dice(count) do

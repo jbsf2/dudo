@@ -23,6 +23,10 @@ defmodule Dudo.GameService do
     send pid(game_id), {:lose_dice, player_name}
   end
 
+  def add_dice(game_id, player_name) do
+    send pid(game_id), {:add_dice, player_name}
+  end
+
   def state(game_id) do
     send pid(game_id), {:state, self()}
     receive do
@@ -57,6 +61,8 @@ defmodule Dudo.GameService do
         Game.add_player(game, player_name)
       {:lose_dice, player_name} ->
         Game.lose_dice(game, player_name)
+      {:add_dice, player_name} ->
+        Game.add_dice(game, player_name)
       {:state, pid} ->
         send pid, game
     end
