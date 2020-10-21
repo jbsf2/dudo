@@ -65,6 +65,7 @@ defmodule Dudo.GameService do
         Game.add_dice(game, player_name)
       {:state, pid} ->
         send pid, game
+      # fall through _
     end
   end
 end

@@ -4,8 +4,8 @@ defmodule Dudo.Game do
   alias Dudo.Player
 
   def add_player(game, player_name) do
-    player = Dudo.Player.new_player(player_name)
-    %Dudo.Game{players: game.players ++ [player]}
+    player = Player.new_player(player_name) # change to just new instead of new_player
+    %__MODULE__{players: game.players ++ [player]}
   end
 
   def lose_dice(game, player_name) do
@@ -13,7 +13,7 @@ defmodule Dudo.Game do
       if (player.name == player_name), do: Player.lose_dice(player), else: player
     end)
 
-    %Dudo.Game{players: players}
+    %__MODULE__{players: players}
   end
 
   def add_dice(game, player_name) do
@@ -21,10 +21,8 @@ defmodule Dudo.Game do
       if (player.name == player_name), do: Player.add_dice(player), else: player
     end)
 
-    %Dudo.Game{players: players}
+    %__MODULE__{players: players}
   end
 
-  def find_player(game, player_name) do
-    Enum.find(game.players, fn player -> player.name == player_name end)
-  end
+  def find_player(game, player_name), do: Enum.find(game.players, &(&1.name == player_name))
 end

@@ -7,7 +7,7 @@
         <%= submit "Go" %>
     <% end %>
 
-    <%= form_for @conn, Routes.game_path(@conn, :create), fn f -> %>
+    <%= form_for @conn, Routes.game_path(@conn, :create), fn _ -> %>
         <div>Or:</div>
         <%= submit "Start a new game" %>
     <% end %>

@@ -13,7 +13,7 @@ config :dudo, DudoWeb.Endpoint,
   secret_key_base: "bALhm0EtwIq9l4Dg6nBpvBPEDP4b4KEQZNdGxgsMyJ2w3pF5QfgNgYRgBvSGboP/",
   render_errors: [view: DudoWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Dudo.PubSub,
-  live_view: [signing_salt: "1vQcglJT"]
+  live_view: [signing_salt: "zCYZNRbpq1N9iQYUhjesplOZXvNWJonM"]
 
 # Configures Elixir's Logger
 config :logger, :console,

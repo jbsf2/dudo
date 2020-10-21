@@ -29,10 +29,8 @@ defmodule DudoWeb.ChannelCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Dudo.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Dudo.Repo, {:shared, self()})
     end
 
     :ok
