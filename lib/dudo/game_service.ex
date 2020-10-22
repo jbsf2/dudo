@@ -19,16 +19,20 @@ defmodule Dudo.GameService do
     GenServer.cast(via_tuple(game_id), {:lose_dice, player_name})
   end
 
-  def start_link(player_name) do
+  def new_game(player_name) do
     game_id = new_game_id()
 
+    DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id, player_name}})
+
+    game_id
+  end
+
+  def start_link({game_id, player_name}) do
     GenServer.start_link(
       __MODULE__,
       Game.new(player_name),
       name: via_tuple(game_id)
     )
-
-    {:ok, game_id}
   end
 
   defp via_tuple(game_id) do

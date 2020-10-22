@@ -8,7 +8,7 @@ defmodule DudoWeb.GameController do
   def create(conn, _) do
     player_name = get_session(conn, :player_name)
 
-    {:ok, game_id} = GameService.start_link(player_name)
+    game_id = GameService.new_game(player_name)
 
     conn
     |> put_session(:game_id, game_id)
