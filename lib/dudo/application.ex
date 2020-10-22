@@ -16,7 +16,8 @@ defmodule Dudo.Application do
       # Start a worker by calling: Dudo.Worker.start_link(arg)
       # {Dudo.Worker, arg}
 
-      {Registry, keys: :unique, name: :game_id_registry}
+      {Registry, keys: :unique, name: :game_id_registry},
+      {DynamicSupervisor, strategy: :one_for_one, name: :game_supervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
