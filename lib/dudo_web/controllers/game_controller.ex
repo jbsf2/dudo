@@ -8,7 +8,8 @@ defmodule DudoWeb.GameController do
   def create(conn, _) do
     player_name = get_session(conn, :player_name)
 
-    game_id = GameService.create_game(player_name)
+    {:ok, game_id} = GameService.start_link(player_name)
+
     conn
     |> put_session(:game_id, game_id)
     |> redirect(to: Routes.game_path(conn, :show, game_id))
@@ -29,14 +30,14 @@ defmodule DudoWeb.GameController do
   end
 
   def check_login(conn, _opts) do
-     if get_session(conn, :player_name) == nil do
+    if get_session(conn, :player_name) == nil do
       conn
       |> put_flash(:info, "Enter your name to join the game!")
       |> put_session(:after_login_redirect_path, conn.request_path)
       |> redirect(to: Routes.login_path(conn, :new))
       |> halt
-     else
+    else
       conn
-     end
+    end
   end
 end

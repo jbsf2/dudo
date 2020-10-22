@@ -1,37 +1,38 @@
 defmodule Dudo.GameService do
+  use GenServer
 
   alias Dudo.Game
 
-  def start() do
-    pid = spawn(fn -> run(%Dudo.Game{}) end)
-    game_id = new_game_id()
-    Registry.put_meta(:game_id_registry, {game_id}, pid)
-    game_id
-  end
-
-  def create_game(player_name) do
-    game_id = start()
-    add_player(game_id, player_name)
-    game_id
+  def state(game_id) do
+    GenServer.call(via_tuple(game_id), :state)
   end
 
   def add_player(game_id, player_name) do
-    send pid(game_id), {:add_player, player_name}
-  end
-
-  def lose_dice(game_id, player_name) do
-    send pid(game_id), {:lose_dice, player_name}
+    GenServer.cast(via_tuple(game_id), {:add_player, player_name})
   end
 
   def add_dice(game_id, player_name) do
-    send pid(game_id), {:add_dice, player_name}
+    GenServer.cast(via_tuple(game_id), {:add_dice, player_name})
   end
 
-  def state(game_id) do
-    send pid(game_id), {:state, self()}
-    receive do
-      %Dudo.Game{} = game -> game
-    end
+  def lose_dice(game_id, player_name) do
+    GenServer.cast(via_tuple(game_id), {:lose_dice, player_name})
+  end
+
+  def start_link(player_name) do
+    game_id = new_game_id()
+
+    GenServer.start_link(
+      __MODULE__,
+      Game.new(player_name),
+      name: via_tuple(game_id)
+    )
+
+    {:ok, game_id}
+  end
+
+  defp via_tuple(game_id) do
+    {:via, Registry, {:game_id_registry, game_id}}
   end
 
   defp new_game_id do
@@ -45,27 +46,28 @@ defmodule Dudo.GameService do
     |> Integer.to_string(36)
   end
 
-  defp pid(game_id) do
-    {:ok, pid} = Registry.meta(:game_id_registry, {game_id})
-    pid
+  @impl true
+  def init(%Dudo.Game{} = game) do
+    {:ok, game}
   end
 
-  defp run(game) do
-    new_game = listen(game)
-    run(new_game)
+  @impl true
+  def handle_call(:state, _from, game) do
+    {:reply, game, game}
   end
 
-  defp listen(game) do
-    receive do
-      {:add_player, player_name} ->
-        Game.add_player(game, player_name)
-      {:lose_dice, player_name} ->
-        Game.lose_dice(game, player_name)
-      {:add_dice, player_name} ->
-        Game.add_dice(game, player_name)
-      {:state, pid} ->
-        send pid, game
-      # fall through _
-    end
+  @impl true
+  def handle_cast({:add_player, player_name}, game) do
+    {:noreply, game |> Game.add_player(player_name)}
+  end
+
+  @impl true
+  def handle_cast({:add_dice, player_name}, game) do
+    {:noreply, game |> Game.add_dice(player_name)}
+  end
+
+  @impl true
+  def handle_cast({:lose_dice, player_name}, game) do
+    {:noreply, game |> Game.lose_dice(player_name)}
   end
 end

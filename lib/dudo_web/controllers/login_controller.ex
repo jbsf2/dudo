@@ -6,7 +6,7 @@ defmodule DudoWeb.LoginController do
   end
 
   def create(conn, %{"login" => %{"player_name" => player_name}}) do
-    player = Dudo.Player.new_player(player_name)
+    player = Dudo.Player.new(player_name)
     redirect_path = get_session(conn, :after_login_redirect_path) || "/welcome"
 
     conn

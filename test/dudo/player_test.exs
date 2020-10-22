@@ -4,7 +4,7 @@ defmodule Dudo.PlayerTest do
   alias Dudo.Player
 
   test "it has five dice on creation" do
-    player = Player.new_player("Jill")
+    player = Player.new("Jill")
     dice = player.dice
     assert length(dice) == 5
   end
@@ -24,7 +24,7 @@ defmodule Dudo.PlayerTest do
 
   test "lose_dice decrements the dice count, bottoming out at 0" do
     player =
-      Player.new_player("Jill")
+      Player.new("Jill")
       |> Player.lose_dice()
       |> Player.lose_dice()
       |> Player.lose_dice()
@@ -39,7 +39,7 @@ defmodule Dudo.PlayerTest do
   end
 
   test "shake_dice" do
-    player = Player.new_player("Jill", 100)
+    player = Player.new("Jill", 100)
     shaked = Player.shake_dice(player)
 
     assert player.dice != shaked.dice

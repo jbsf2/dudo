@@ -9,7 +9,8 @@ defmodule DudoWeb.DiceController do
     GameService.add_dice(game_id, player_name)
 
     conn
-    |> redirect(to: Routes.game_path(conn, :show, game_id))  end
+    |> redirect(to: Routes.game_path(conn, :show, game_id))
+  end
 
   def delete(conn, %{"game_id" => game_id, "player_name" => player_name}) do
     GameService.lose_dice(game_id, player_name)

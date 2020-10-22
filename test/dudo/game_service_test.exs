@@ -4,46 +4,43 @@ defmodule Dudo.GameServiceTest do
   alias Dudo.GameService
 
   test "adding a player" do
-    game_id = GameService.start()
-    GameService.add_player(game_id, "Bob")
-    game = GameService.state(game_id)
+    {:ok, pid} = GameService.start_link("Bob")
+    game = GameService.state(pid)
     player = hd(game.players)
     assert player.name == "Bob"
   end
 
   test "losing and adding dice" do
-    game_id = GameService.start()
-    GameService.add_player(game_id, "Bob")
-    GameService.add_player(game_id, "Alice")
-    GameService.lose_dice(game_id, "Bob")
+    {:ok, pid} = GameService.start_link("Bob")
+    GameService.add_player(pid, "Alice")
+    GameService.lose_dice(pid, "Bob")
 
-    game = GameService.state(game_id)
+    game = GameService.state(pid)
     bob = Enum.find(game.players, fn player -> player.name == "Bob" end)
     assert length(bob.dice) == 4
 
-    GameService.add_dice(game_id, "Bob")
+    GameService.add_dice(pid, "Bob")
 
-    game = GameService.state(game_id)
+    game = GameService.state(pid)
     bob = Enum.find(game.players, fn player -> player.name == "Bob" end)
     assert length(bob.dice) == 5
   end
 
   test "querying state doesn't lose state" do
-    game_id = GameService.start()
-    GameService.add_player(game_id, "Bob")
-    GameService.add_player(game_id, "Alice")
+    {:ok, pid} = GameService.start_link("Bob")
+    GameService.add_player(pid, "Alice")
 
-    game = GameService.state(game_id)
+    game = GameService.state(pid)
     assert length(game.players) == 2
 
-    GameService.add_player(game_id, "Jane")
-    game = GameService.state(game_id)
+    GameService.add_player(pid, "Jane")
+    game = GameService.state(pid)
     assert length(game.players) == 3
   end
 
   test "create_game starts a game and adds a player" do
-    game_id = GameService.create_game("Player 1")
-    game = GameService.state(game_id)
+    {:ok, pid} = GameService.start_link("Player 1")
+    game = GameService.state(pid)
     assert hd(game.players).name == "Player 1"
   end
 end
