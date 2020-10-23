@@ -28,19 +28,17 @@ defmodule DudoWeb.GameLive do
   def handle_event("lose_dice", _params, socket) do
     {game_id, current_player} = session_data(socket)
 
-    GameService.lose_dice(game_id, current_player)
-    players = GameService.state(game_id).players
+    game = GameService.lose_dice(game_id, current_player)
 
-    {:noreply, assign(socket, :players, players)}
+    {:noreply, assign(socket, :players, game.players)}
   end
 
   def handle_event("add_dice", _params, socket) do
     {game_id, current_player} = session_data(socket)
 
-    GameService.add_dice(game_id, current_player)
-    players = GameService.state(game_id).players
+    game = GameService.add_dice(game_id, current_player)
 
-    {:noreply, assign(socket, :players, players)}
+    {:noreply, assign(socket, :players, game.players)}
   end
 
   defp session_data(socket) do

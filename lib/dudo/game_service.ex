@@ -8,15 +8,15 @@ defmodule Dudo.GameService do
   end
 
   def add_player(game_id, player_name) do
-    GenServer.cast(via_tuple(game_id), {:add_player, player_name})
+    GenServer.call(via_tuple(game_id), {:add_player, player_name})
   end
 
   def add_dice(game_id, player_name) do
-    GenServer.cast(via_tuple(game_id), {:add_dice, player_name})
+    GenServer.call(via_tuple(game_id), {:add_dice, player_name})
   end
 
   def lose_dice(game_id, player_name) do
-    GenServer.cast(via_tuple(game_id), {:lose_dice, player_name})
+    GenServer.call(via_tuple(game_id), {:lose_dice, player_name})
   end
 
   def new_game(player_name) do
@@ -61,17 +61,20 @@ defmodule Dudo.GameService do
   end
 
   @impl true
-  def handle_cast({:add_player, player_name}, game) do
-    {:noreply, game |> Game.add_player(player_name)}
+  def handle_call({:add_player, player_name}, _from, game) do
+    game = game |> Game.add_player(player_name)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:add_dice, player_name}, game) do
-    {:noreply, game |> Game.add_dice(player_name)}
+  def handle_call({:add_dice, player_name}, _from, game) do
+    game = game |> Game.add_dice(player_name)
+    {:reply, game, game}
   end
 
   @impl true
-  def handle_cast({:lose_dice, player_name}, game) do
-    {:noreply, game |> Game.lose_dice(player_name)}
+  def handle_call({:lose_dice, player_name}, _from, game) do
+    game = game |> Game.lose_dice(player_name)
+    {:reply, game, game}
   end
 end
