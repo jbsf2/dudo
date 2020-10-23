@@ -1,6 +1,5 @@
 
 <div class="topmargin">
-
     <table class="players">
         <%= for player <- @players do %>
             <tr class="player">
@@ -26,11 +25,11 @@
                 </td>
                 <td>
                     <%= if player.name == @current_player do %>
-                        <%= form_for @conn, Routes.dice_path(@conn, :delete, @game_id, player.name), fn _f -> %>
+                        <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
                             <input name="_method" type="hidden" value="delete" />
                             <%= submit "Lose a dice" %>
                         <% end %>
-                        <%= form_for @conn, Routes.dice_path(@conn, :create, @game_id, player.name), fn _f -> %>
+                        <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
                             <%= submit "Win a dice" %>
                         <% end %>
                     <% end %>

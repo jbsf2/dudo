@@ -1,24 +1,18 @@
 defmodule DudoWeb.GameController do
   use DudoWeb, :controller
 
-  plug :check_login when action in [:show]
-
   alias Dudo.GameService
 
-  def create(conn, _) do
+  plug :check_login
+
+  def create(conn, _params) do
     player_name = get_session(conn, :player_name)
 
     game_id = GameService.new_game(player_name)
 
     conn
     |> put_session(:game_id, game_id)
-    |> redirect(to: Routes.game_path(conn, :show, game_id))
-  end
-
-  def show(conn, %{"id" => game_id}) do
-    player_name = get_session(conn, :player_name)
-    players = GameService.state(game_id).players
-    render(conn, "show.html", players: players, current_player: player_name, game_id: game_id)
+    |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
   end
 
   def join(conn, %{"game" => %{"id" => game_id}}) do
@@ -26,7 +20,7 @@ defmodule DudoWeb.GameController do
 
     conn
     |> put_session(:game_id, game_id)
-    |> redirect(to: Routes.game_path(conn, :show, game_id))
+    |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
   end
 
   def check_login(conn, _opts) do
