@@ -14,6 +14,7 @@ defmodule DudoWeb.GameLive do
       |> assign(:game_id, game_id)
       |> assign(:current_player, current_player)
 
+    DudoWeb.Endpoint.subscribe(game_id)
     {:ok, socket}
   end
 
@@ -38,6 +39,10 @@ defmodule DudoWeb.GameLive do
 
     game = GameService.add_dice(game_id, current_player)
 
+    {:noreply, assign(socket, :players, game.players)}
+  end
+
+  def handle_info(%Dudo.Game{} = game, socket) do
     {:noreply, assign(socket, :players, game.players)}
   end
 

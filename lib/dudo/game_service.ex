@@ -1,6 +1,7 @@
 defmodule Dudo.GameService do
   use GenServer
 
+  alias Phoenix.PubSub
   alias Dudo.Game
 
   def state(game_id) do
@@ -9,14 +10,17 @@ defmodule Dudo.GameService do
 
   def add_player(game_id, player_name) do
     GenServer.call(via_tuple(game_id), {:add_player, player_name})
+    |> broadcast(game_id)
   end
 
   def add_dice(game_id, player_name) do
     GenServer.call(via_tuple(game_id), {:add_dice, player_name})
+    |> broadcast(game_id)
   end
 
   def lose_dice(game_id, player_name) do
     GenServer.call(via_tuple(game_id), {:lose_dice, player_name})
+    |> broadcast(game_id)
   end
 
   def new_game(player_name) do
@@ -33,6 +37,11 @@ defmodule Dudo.GameService do
       Game.new(player_name),
       name: via_tuple(game_id)
     )
+  end
+
+  defp broadcast(game, game_id) do
+    PubSub.broadcast(Dudo.PubSub, game_id, game)
+    game
   end
 
   defp via_tuple(game_id) do

@@ -49,6 +49,39 @@ defmodule DudoWeb.GameLiveTest do
     assert redirected_to(conn, 302) == Routes.login_path(conn, :new)
   end
 
+  test "updating the other players when a player changes the game state", %{
+    conn: conn1,
+    game_path: game_path
+  } do
+    # step 1: have a second player join the game
+    # game_path will look like "/games/ABCD"
+    game_id = String.slice(game_path, 7..11)
+    conn2 = Phoenix.ConnTest.build_conn()
+
+    conn2 =
+      conn2
+      |> Plug.Test.init_test_session(player_name: "Player 2")
+      |> post(Routes.game_path(conn2, :join), %{"game" => %{"id" => game_id}})
+
+    assert redirected_to(conn2, 302) == Routes.live_path(conn2, DudoWeb.GameLive, game_id)
+
+    # step 2: connect both players via LiveView, make sure they have expected dice count
+    {:ok, view1, html1} = live(conn1, game_path)
+    assert dice_count(html1) == 10
+
+    {:ok, view2, html2} = live(conn2, game_path)
+    assert dice_count(html2) == 10
+
+    # step 3: lose dice for Player 1
+    html1 = render_submit(view1, :lose_dice)
+    assert dice_count(html1) == 9
+
+    # step 4: assert view for Player 2 is updated
+    # TODO: make this async-safe
+    html2 = render(view2)
+    assert dice_count(html2) == 9
+  end
+
   defp dice_count(html) do
     html |> xpath(~x"count(//li[contains(@class, 'dice')])")
   end
