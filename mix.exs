@@ -45,7 +45,8 @@ defmodule Dudo.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:phoenix_live_view, "~> 0.14.7"},
       {:floki, ">= 0.27.0", only: :test},
-      {:sweet_xml, ">= 0.6.6", only: :test}
+      {:sweet_xml, ">= 0.6.6", only: :test},
+      {:dialyxir, only: :dev}
     ]
   end
 

@@ -4,25 +4,6 @@ defmodule Dudo.GameService do
   alias Phoenix.PubSub
   alias Dudo.Game
 
-  def state(game_id) do
-    GenServer.call(via_tuple(game_id), :state)
-  end
-
-  def add_player(game_id, player_name) do
-    GenServer.call(via_tuple(game_id), {:add_player, player_name})
-    |> broadcast(game_id)
-  end
-
-  def add_dice(game_id, player_name) do
-    GenServer.call(via_tuple(game_id), {:add_dice, player_name})
-    |> broadcast(game_id)
-  end
-
-  def lose_dice(game_id, player_name) do
-    GenServer.call(via_tuple(game_id), {:lose_dice, player_name})
-    |> broadcast(game_id)
-  end
-
   def new_game(player_name) do
     game_id = new_game_id()
 
@@ -30,6 +11,14 @@ defmodule Dudo.GameService do
 
     game_id
   end
+
+  def state(game_id) do
+    GenServer.call(via_tuple(game_id), :state)
+  end
+
+  def add_player(game_id, player_name), do: call_and_broadcast(:add_player, game_id, player_name)
+  def add_dice(game_id, player_name), do: call_and_broadcast(:add_dice, game_id, player_name)
+  def lose_dice(game_id, player_name), do: call_and_broadcast(:lose_dice, game_id, player_name)
 
   def start_link({game_id, player_name}) do
     GenServer.start_link(
@@ -39,7 +28,8 @@ defmodule Dudo.GameService do
     )
   end
 
-  defp broadcast(game, game_id) do
+  defp call_and_broadcast(action, game_id, player_name) do
+    game = GenServer.call(via_tuple(game_id), {action, player_name})
     PubSub.broadcast(Dudo.PubSub, game_id, game)
     game
   end
