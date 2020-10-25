@@ -40,9 +40,15 @@ defmodule DudoWeb.GameLive do
     fun = Map.get(@function_map, to_string(action))
     game = fun.(game_id, current_player.name)
 
-    {:noreply, assign(socket, :game, game)}
+    socket =
+      socket
+      |> assign(:game, game)
+      |> assign(:current_player, Game.find_player(game, current_player.name))
+
+    {:noreply, socket}
   end
 
+  # ask Greg about this kind of pattern matching on arg type vs. using @specs
   def handle_info(%Dudo.Game{} = game, socket) do
     {:noreply, assign(socket, :game, game)}
   end

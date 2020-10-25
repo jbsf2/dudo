@@ -32,8 +32,10 @@
                         <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
                             <%= submit "Win a dice" %>
                         <% end %>
-                        <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
-                            <%= submit "Reveal dice" %>
+                        <%= if @current_player.dice_visibility == :hidden do %>
+                            <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
+                                <%= submit "Reveal dice" %>
+                            <% end %>
                         <% end %>
                     <% end %>
                 </td>
