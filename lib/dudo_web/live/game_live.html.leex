@@ -1,11 +1,11 @@
 
 <div class="topmargin">
     <table class="players">
-        <%= for player <- @players do %>
+        <%= for player <- @game.players do %>
             <tr class="player">
                 <td class="player-name"><%= player.name %></td>
                 <td>
-                <%= if player.name == @current_player do %>
+                <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
                     <ul>
                         <%= for dice <- player.dice do %>
                             <li class="dice d<%= dice %>">
@@ -24,13 +24,16 @@
                 <% end %>
                 </td>
                 <td>
-                    <%= if player.name == @current_player do %>
+                    <%= if player.name == @current_player.name do %>
                         <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
                             <input name="_method" type="hidden" value="delete" />
                             <%= submit "Lose a dice" %>
                         <% end %>
                         <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
                             <%= submit "Win a dice" %>
+                        <% end %>
+                        <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
+                            <%= submit "Reveal dice" %>
                         <% end %>
                     <% end %>
                 </td>

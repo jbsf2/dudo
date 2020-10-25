@@ -12,8 +12,10 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/cowlib" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/db_connection" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/decimal" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/dialyxir" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ecto" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ecto_sql" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/erlex" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/file_system" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/gettext" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jason" />
@@ -110,5 +112,7 @@
     <orderEntry type="library" name="ranch" level="project" />
     <orderEntry type="library" name="sweet_xml" level="project" />
     <orderEntry type="library" name="cowboy_telemetry" level="project" />
+    <orderEntry type="library" name="erlex" level="project" />
+    <orderEntry type="library" name="credo" level="project" />
   </component>
 </module>

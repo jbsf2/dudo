@@ -4,14 +4,16 @@ defmodule DudoWeb.GameLive do
   import DudoWeb.Router.Helpers, [:login_path]
 
   alias Dudo.GameService
+  alias Dudo.Game
 
-  def mount(%{"id" => game_id}, %{"player_name" => current_player}, socket) do
-    players = GameService.state(game_id).players
+  def mount(%{"id" => game_id}, %{"player_name" => current_player_name}, socket) do
+    game = GameService.state(game_id)
+    current_player = Game.find_player(game, current_player_name)
 
     socket =
       socket
-      |> assign(:players, players)
       |> assign(:game_id, game_id)
+      |> assign(:game, game)
       |> assign(:current_player, current_player)
 
     DudoWeb.Endpoint.subscribe(game_id)
@@ -26,28 +28,22 @@ defmodule DudoWeb.GameLive do
     {:ok, socket}
   end
 
-  def handle_event("lose_dice", _params, socket) do
-    {game_id, current_player} = session_data(socket)
+  # ask Greg whether this technique seems advisable
+  @function_map %{
+    "lose_dice" => &GameService.lose_dice/2,
+    "add_dice" => &GameService.add_dice/2,
+    "reveal_dice" => &GameService.reveal_dice/2
+  }
 
-    game = GameService.lose_dice(game_id, current_player)
+  def handle_event(action, _params, socket) do
+    %{game_id: game_id, current_player: current_player} = socket.assigns
+    fun = Map.get(@function_map, to_string(action))
+    game = fun.(game_id, current_player.name)
 
-    {:noreply, assign(socket, :players, game.players)}
-  end
-
-  def handle_event("add_dice", _params, socket) do
-    {game_id, current_player} = session_data(socket)
-
-    game = GameService.add_dice(game_id, current_player)
-
-    {:noreply, assign(socket, :players, game.players)}
+    {:noreply, assign(socket, :game, game)}
   end
 
   def handle_info(%Dudo.Game{} = game, socket) do
-    {:noreply, assign(socket, :players, game.players)}
-  end
-
-  defp session_data(socket) do
-    %{game_id: game_id, current_player: current_player} = socket.assigns
-    {game_id, current_player}
+    {:noreply, assign(socket, :game, game)}
   end
 end

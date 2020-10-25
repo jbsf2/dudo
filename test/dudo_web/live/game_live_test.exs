@@ -34,10 +34,10 @@ defmodule DudoWeb.GameLiveTest do
     {:ok, view, html} = live(conn, game_path)
     assert dice_count(html) == 5
 
-    html = render_submit(view, :lose_dice)
+    html = render_submit(view, "lose_dice")
     assert dice_count(html) == 4
 
-    html = render_submit(view, :add_dice)
+    html = render_submit(view, "add_dice")
     assert dice_count(html) == 5
   end
 

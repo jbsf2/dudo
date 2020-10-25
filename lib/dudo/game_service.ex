@@ -1,6 +1,7 @@
 defmodule Dudo.GameService do
   use GenServer
 
+  # ask Greg about pubsub introducing a dependency on Phoenix
   alias Phoenix.PubSub
   alias Dudo.Game
 
@@ -16,9 +17,13 @@ defmodule Dudo.GameService do
     GenServer.call(via_tuple(game_id), :state)
   end
 
+  # ask Greg whether it's worth trying to further reduce the boilerplate
   def add_player(game_id, player_name), do: call_and_broadcast(:add_player, game_id, player_name)
   def add_dice(game_id, player_name), do: call_and_broadcast(:add_dice, game_id, player_name)
   def lose_dice(game_id, player_name), do: call_and_broadcast(:lose_dice, game_id, player_name)
+
+  def reveal_dice(game_id, player_name),
+    do: call_and_broadcast(:reveal_dice, game_id, player_name)
 
   def start_link({game_id, player_name}) do
     GenServer.start_link(
@@ -59,21 +64,18 @@ defmodule Dudo.GameService do
     {:reply, game, game}
   end
 
-  @impl true
-  def handle_call({:add_player, player_name}, _from, game) do
-    game = game |> Game.add_player(player_name)
-    {:reply, game, game}
-  end
+  # ask Greg whether this technique seems advisable
+  @function_map %{
+    add_player: &Game.add_player/2,
+    add_dice: &Game.add_dice/2,
+    lose_dice: &Game.lose_dice/2,
+    reveal_dice: &Game.reveal_dice/2
+  }
 
   @impl true
-  def handle_call({:add_dice, player_name}, _from, game) do
-    game = game |> Game.add_dice(player_name)
-    {:reply, game, game}
-  end
-
-  @impl true
-  def handle_call({:lose_dice, player_name}, _from, game) do
-    game = game |> Game.lose_dice(player_name)
+  def handle_call({action, player_name}, _from, game) do
+    fun = Map.get(@function_map, action)
+    game = game |> fun.(player_name)
     {:reply, game, game}
   end
 end
