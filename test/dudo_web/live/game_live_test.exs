@@ -78,6 +78,7 @@ defmodule DudoWeb.GameLiveTest do
 
     # step 4: assert view for Player 2 is updated
     # TODO: make this async-safe
+    # ask Greg - is this in fact async-safe already?
     html2 = render(view2)
     assert dice_count(html2) == 9
   end
