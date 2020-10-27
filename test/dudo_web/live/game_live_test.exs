@@ -83,7 +83,44 @@ defmodule DudoWeb.GameLiveTest do
     assert dice_count(html2) == 9
   end
 
+  test "other players can see dice after reveal", %{conn: conn1, game_path: game_path} do
+    # step 1: second player joins the game
+    # game_path will look like "/games/ABCD"
+    game_id = String.slice(game_path, 7..11)
+    conn2 = Phoenix.ConnTest.build_conn()
+
+    conn2 =
+      conn2
+      |> Plug.Test.init_test_session(player_name: "Player 2")
+      |> post(Routes.game_path(conn2, :join), %{"game" => %{"id" => game_id}})
+
+    assert redirected_to(conn2, 302) == Routes.live_path(conn2, DudoWeb.GameLive, game_id)
+
+    # step 2: connect both players via LiveView, make sure they have expected dice count
+    {:ok, view1, html1} = live(conn1, game_path)
+    assert visible_dice_count(html1) == 5
+
+    {:ok, view2, html2} = live(conn2, game_path)
+    assert visible_dice_count(html2) == 5
+
+    # step 3: lose dice for Player 1
+    html1 = render_submit(view1, :reveal_dice)
+    # player 1 should still see only her 5 dice
+    assert visible_dice_count(html1) == 5
+
+    # step 4: assert view for Player 2 is updated
+    # player 2 should see all 10 dice as visible
+    # TODO: make this async-safe
+    # ask Greg - is this in fact async-safe already?
+    html2 = render(view2)
+    assert visible_dice_count(html2) == 10
+  end
+
   defp dice_count(html) do
     html |> xpath(~x"count(//li[contains(@class, 'dice')])")
+  end
+
+  defp visible_dice_count(html) do
+    html |> xpath(~x"count(//li[contains(@class, 'dice')][not(contains(@class, 'hidden'))])")
   end
 end
