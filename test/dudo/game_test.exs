@@ -64,4 +64,25 @@ defmodule Dudo.GameTest do
       assert game |> Game.can_see_dice("viewer", "revealed") == true
     end
   end
+
+  describe "shaking dice permissions" do
+    test "a player can't shake again until someone loses or wins a dice" do
+      game =
+        %Dudo.Game{}
+        |> Game.add_player("alice")
+        |> Game.add_player("bob")
+        |> Game.add_player("chris")
+
+      assert game |> Game.can_shake_dice("alice") == false
+      assert game |> Game.can_shake_dice("bob") == false
+
+      game = game |> Game.lose_dice("alice")
+      assert game |> Game.can_shake_dice("alice") == false
+      assert game |> Game.can_shake_dice("bob") == true
+
+      game = game |> Game.shake_dice("bob")
+      assert game |> Game.can_shake_dice("alice") == false
+      assert game |> Game.can_shake_dice("bob") == false
+    end
+  end
 end

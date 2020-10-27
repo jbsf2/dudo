@@ -21,6 +21,7 @@ defmodule Dudo.GameService do
   def add_player(game_id, player_name), do: call_and_broadcast(:add_player, game_id, player_name)
   def add_dice(game_id, player_name), do: call_and_broadcast(:add_dice, game_id, player_name)
   def lose_dice(game_id, player_name), do: call_and_broadcast(:lose_dice, game_id, player_name)
+  def shake_dice(game_id, player_name), do: call_and_broadcast(:shake_dice, game_id, player_name)
 
   def reveal_dice(game_id, player_name),
     do: call_and_broadcast(:reveal_dice, game_id, player_name)
@@ -69,7 +70,8 @@ defmodule Dudo.GameService do
     add_player: &Game.add_player/2,
     add_dice: &Game.add_dice/2,
     lose_dice: &Game.lose_dice/2,
-    reveal_dice: &Game.reveal_dice/2
+    reveal_dice: &Game.reveal_dice/2,
+    shake_dice: &Game.shake_dice/2
   }
 
   @impl true

@@ -32,7 +32,8 @@ defmodule DudoWeb.GameLive do
   @function_map %{
     "lose_dice" => &GameService.lose_dice/2,
     "add_dice" => &GameService.add_dice/2,
-    "reveal_dice" => &GameService.reveal_dice/2
+    "reveal_dice" => &GameService.reveal_dice/2,
+    "shake_dice" => &GameService.shake_dice/2
   }
 
   def handle_event(action, _params, socket) do

@@ -37,6 +37,11 @@
                                 <%= submit "Reveal dice" %>
                             <% end %>
                         <% end %>
+                        <%= if Game.can_shake_dice(@game, @current_player.name) do %>
+                            <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
+                                <%= submit "Shake dice" %>
+                            <% end %>
+                        <% end %>
                     <% end %>
                 </td>
             </tr>

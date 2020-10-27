@@ -1,12 +1,8 @@
 
 
 
-
-
-players can lose a dice
-players can gain a dice
-players can Show their dice
 players can shake their dice
+can't add more than 5 dice
 players see a log of events
     - so and so lost a dice
     - so and so joined game
@@ -15,5 +11,6 @@ If open, players can see other players' dice, but not their own
 If closed, normal game
 Prevent name collisions
 sanitize inputs
+tighten up error handling
 deploy
 montado
