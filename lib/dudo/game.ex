@@ -1,24 +1,28 @@
 defmodule Dudo.Game do
   alias Dudo.Player
 
+  @type game_mode :: :open | :closed
   @type players :: [Player.t()]
 
-  defstruct players: [], round: []
+  defstruct players: [], round: [], mode: :closed
 
   @type t :: %Dudo.Game{
           players: players(),
-          round: players()
+          round: players(),
+          mode: game_mode()
         }
 
   @spec new(String.t()) :: t()
   def new(player_name) do
-    %Dudo.Game{players: []} |> add_player(player_name)
+    %Dudo.Game{} |> add_player(player_name)
   end
 
   @spec add_player(t(), String.t()) :: t()
   def add_player(game, player_name) do
     new_player = Player.new(player_name)
-    %Dudo.Game{players: game.players ++ [new_player], round: game.round}
+
+    game
+    |> Map.put(:players, game.players ++ [new_player])
     |> add_player_to_round(player_name)
   end
 
@@ -52,10 +56,20 @@ defmodule Dudo.Game do
 
   @spec can_see_dice(t(), String.t(), String.t()) :: boolean()
   def can_see_dice(game, viewer_name, dice_owner_name) do
-    if viewer_name == dice_owner_name do
-      true
-    else
-      find_player(game, dice_owner_name).dice_visibility == :revealed
+    case game.mode do
+      :closed ->
+        if viewer_name == dice_owner_name do
+          true
+        else
+          find_player(game, dice_owner_name).dice_visibility == :revealed
+        end
+
+      :open ->
+        if viewer_name != dice_owner_name do
+          true
+        else
+          find_player(game, dice_owner_name).dice_visibility == :revealed
+        end
     end
   end
 
@@ -76,16 +90,24 @@ defmodule Dudo.Game do
         if player.name == player_name, do: fun.(player), else: player
       end)
 
-    %Dudo.Game{players: players, round: game.round}
+    game |> Map.put(:players, players)
+  end
+
+  def set_mode(game, :open = mode) do
+    game |> Map.put(:mode, :open)
+  end
+
+  def set_mode(game, :closed = mode) do
+    game |> Map.put(:mode, :closed)
   end
 
   @spec begin_new_round(t()) :: t()
   defp begin_new_round(game) do
-    %Dudo.Game{players: game.players, round: []}
+    game |> Map.put(:round, [])
   end
 
   @spec add_player_to_round(t(), String.t()) :: t()
   defp add_player_to_round(game, player_name) do
-    %Dudo.Game{players: game.players, round: game.round ++ [player_name]}
+    game |> Map.put(:round, game.round ++ [player_name])
   end
 end

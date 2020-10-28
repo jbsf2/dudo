@@ -63,6 +63,33 @@ defmodule Dudo.GameTest do
       assert game |> Game.can_see_dice("viewer", "hidden") == false
       assert game |> Game.can_see_dice("viewer", "revealed") == true
     end
+
+    test "when game is in open mode, players can see others' dice but not their own, until they're revealed" do
+      game =
+        %Dudo.Game{}
+        |> Game.set_mode(:open)
+        |> Game.add_player("alice")
+        |> Game.add_player("bob")
+
+      assert game |> Game.can_see_dice("alice", "alice") == false
+      assert game |> Game.can_see_dice("alice", "bob") == true
+      assert game |> Game.can_see_dice("bob", "alice") == true
+      assert game |> Game.can_see_dice("bob", "bob") == false
+
+      game = game |> Game.reveal_dice("alice")
+
+      assert game |> Game.can_see_dice("alice", "alice") == true
+      assert game |> Game.can_see_dice("alice", "bob") == true
+      assert game |> Game.can_see_dice("bob", "alice") == true
+      assert game |> Game.can_see_dice("bob", "bob") == false
+
+      game = game |> Game.reveal_dice("bob")
+
+      assert game |> Game.can_see_dice("alice", "alice") == true
+      assert game |> Game.can_see_dice("alice", "bob") == true
+      assert game |> Game.can_see_dice("bob", "alice") == true
+      assert game |> Game.can_see_dice("bob", "bob") == true
+    end
   end
 
   describe "shaking dice permissions" do
