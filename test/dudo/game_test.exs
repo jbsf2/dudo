@@ -7,17 +7,18 @@ defmodule Dudo.GameTest do
     game = %Dudo.Game{}
     assert game != nil
     assert game.players == []
+    assert game.mode == :closed
   end
 
   test "adding a player" do
-    game = Game.add_player(%Dudo.Game{}, "john")
+    game = Game.new("john")
     [%Dudo.Player{name: player_name}] = game.players
     assert player_name == "john"
   end
 
   test "losing and adding dice" do
     game =
-      Game.add_player(%Dudo.Game{}, "john")
+      Game.new("john")
       |> Game.add_player("marcia")
       |> Game.lose_dice("marcia")
 
@@ -30,9 +31,25 @@ defmodule Dudo.GameTest do
     assert length(marcia.dice) == 5
   end
 
+  test "losing or adding dice resets game to closed mode" do
+    game =
+      Game.new("marcia")
+      |> Game.set_mode(:open)
+      |> Game.lose_dice("marcia")
+
+    assert game.mode == :closed
+
+    game =
+      game
+      |> Game.set_mode(:open)
+      |> Game.add_dice("marcia")
+
+    assert game.mode == :closed
+  end
+
   test "revealing dice" do
     game =
-      Game.add_player(%Dudo.Game{}, "jane")
+      Game.new("jane")
       |> Game.reveal_dice("jane")
 
     player = Game.find_player(game, "jane")
@@ -43,8 +60,7 @@ defmodule Dudo.GameTest do
   describe "can_see_dice" do
     test "when viewer is the dice owner, returns true" do
       game =
-        %Dudo.Game{}
-        |> Game.add_player("hidden")
+        Game.new("hidden")
         |> Game.add_player("revealed")
         |> Game.reveal_dice("revealed")
 
@@ -54,8 +70,7 @@ defmodule Dudo.GameTest do
 
     test "when viewer is not the dice owner, returns the owner's dice_visibility" do
       game =
-        %Dudo.Game{}
-        |> Game.add_player("hidden")
+        Game.new("hidden")
         |> Game.add_player("revealed")
         |> Game.reveal_dice("revealed")
         |> Game.add_player("viewer")
@@ -66,10 +81,9 @@ defmodule Dudo.GameTest do
 
     test "when game is in open mode, players can see others' dice but not their own, until they're revealed" do
       game =
-        %Dudo.Game{}
-        |> Game.set_mode(:open)
-        |> Game.add_player("alice")
+        Game.new("alice")
         |> Game.add_player("bob")
+        |> Game.set_mode(:open)
 
       assert game |> Game.can_see_dice("alice", "alice") == false
       assert game |> Game.can_see_dice("alice", "bob") == true
@@ -95,8 +109,7 @@ defmodule Dudo.GameTest do
   describe "shaking dice permissions" do
     test "a player can't shake again until someone loses or wins a dice" do
       game =
-        %Dudo.Game{}
-        |> Game.add_player("alice")
+        Game.new("alice")
         |> Game.add_player("bob")
         |> Game.add_player("chris")
 

@@ -32,6 +32,7 @@ defmodule Dudo.Game do
     |> update_player(player_name, &Player.lose_dice/1)
     |> begin_new_round()
     |> add_player_to_round(player_name)
+    |> set_mode(:closed)
   end
 
   @spec add_dice(t(), String.t()) :: t()
@@ -40,6 +41,7 @@ defmodule Dudo.Game do
     |> update_player(player_name, &Player.add_dice/1)
     |> begin_new_round()
     |> add_player_to_round(player_name)
+    |> set_mode(:closed)
   end
 
   @spec reveal_dice(t(), String.t()) :: t()
@@ -93,12 +95,9 @@ defmodule Dudo.Game do
     game |> Map.put(:players, players)
   end
 
-  def set_mode(game, :open = mode) do
-    game |> Map.put(:mode, :open)
-  end
-
-  def set_mode(game, :closed = mode) do
-    game |> Map.put(:mode, :closed)
+  @spec set_mode(t(), game_mode()) :: t()
+  def set_mode(game, mode) do
+    game |> Map.put(:mode, mode)
   end
 
   @spec begin_new_round(t()) :: t()
