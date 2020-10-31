@@ -1,12 +1,13 @@
 
 <div class="topmargin">
+    <audio id="dice-audio" src="/audio/5-dice-1.mp3"></audio>
     <table class="players">
         <%= for player <- @game.players do %>
             <tr class="player">
                 <td class="player-name"><%= player.name %></td>
                 <td>
                 <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
-                    <ul>
+                    <ul id="dice-<%= player.name %>" phx-hook="Dice">
                         <%= for dice <- player.dice do %>
                             <li class="dice d<%= dice %>">
                                 <%= for _dots <- 1..dice do %>
@@ -37,10 +38,8 @@
                                 <%= submit "Reveal dice" %>
                             <% end %>
                         <% end %>
-                        <%= if Game.can_shake_dice(@game, @current_player.name) do %>
-                            <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
-                                <%= submit "Shake dice" %>
-                            <% end %>
+                        <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
+                            <%= submit "Shake dice", class: "shake" %>
                         <% end %>
                     <% end %>
                 </td>

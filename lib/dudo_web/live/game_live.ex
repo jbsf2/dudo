@@ -16,7 +16,7 @@ defmodule DudoWeb.GameLive do
       |> assign(:game, game)
       |> assign(:current_player, current_player)
 
-    DudoWeb.Endpoint.subscribe(game_id)
+    DudoWeb.Endpoint.subscribe("game:#{game_id}")
     {:ok, socket}
   end
 
@@ -28,7 +28,6 @@ defmodule DudoWeb.GameLive do
     {:ok, socket}
   end
 
-  # ask Greg whether this technique seems advisable
   @function_map %{
     "lose_dice" => &GameService.lose_dice/2,
     "add_dice" => &GameService.add_dice/2,
@@ -38,7 +37,7 @@ defmodule DudoWeb.GameLive do
 
   def handle_event(action, _params, socket) do
     %{game_id: game_id, current_player: current_player} = socket.assigns
-    fun = Map.get(@function_map, to_string(action))
+    fun = Map.get(@function_map, action)
     game = fun.(game_id, current_player.name)
 
     socket =
@@ -49,8 +48,16 @@ defmodule DudoWeb.GameLive do
     {:noreply, socket}
   end
 
-  # ask Greg about this kind of pattern matching on arg type vs. using @specs
-  def handle_info(%Dudo.Game{} = game, socket) do
+  def handle_info({:shake_dice, game, player_name}, socket) do
+    socket =
+      socket
+      |> push_event(:shake, %{player_name: player_name})
+      |> assign(:game, game)
+
+    {:noreply, socket}
+  end
+
+  def handle_info({_action, game, _player_name}, socket) do
     {:noreply, assign(socket, :game, game)}
   end
 end

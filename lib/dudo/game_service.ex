@@ -17,7 +17,6 @@ defmodule Dudo.GameService do
     GenServer.call(via_tuple(game_id), :state)
   end
 
-  # ask Greg whether it's worth trying to further reduce the boilerplate
   def add_player(game_id, player_name), do: call_and_broadcast(:add_player, game_id, player_name)
   def add_dice(game_id, player_name), do: call_and_broadcast(:add_dice, game_id, player_name)
   def lose_dice(game_id, player_name), do: call_and_broadcast(:lose_dice, game_id, player_name)
@@ -36,7 +35,7 @@ defmodule Dudo.GameService do
 
   defp call_and_broadcast(action, game_id, player_name) do
     game = GenServer.call(via_tuple(game_id), {action, player_name})
-    PubSub.broadcast(Dudo.PubSub, game_id, game)
+    PubSub.broadcast(Dudo.PubSub, "game:#{game_id}", {action, game, player_name})
     game
   end
 

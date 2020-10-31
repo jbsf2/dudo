@@ -20,7 +20,15 @@ import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+
+let Hooks = {}
+Hooks.Dice = {
+    mounted(){
+       this.handleEvent("shake", ({}) => window.playShakeAudio())
+    }
+  }
+
+let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks})
 
 // Connect if there are any LiveViews on the page
 liveSocket.connect()
@@ -33,6 +41,7 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
-window.onload = function() {
-    document.getElementsByClassName("focus")[0].focus();
+window.playShakeAudio = function() {
+    console.log("playing audio")
+    document.getElementById("dice-audio").play()
 }
