@@ -1,7 +1,6 @@
 defmodule Dudo.GameService do
   use GenServer
 
-  # ask Greg about pubsub introducing a dependency on Phoenix
   alias Phoenix.PubSub
   alias Dudo.Game
 
@@ -64,7 +63,6 @@ defmodule Dudo.GameService do
     {:reply, game, game}
   end
 
-  # ask Greg whether this technique seems advisable
   @function_map %{
     add_player: &Game.add_player/2,
     add_dice: &Game.add_dice/2,
