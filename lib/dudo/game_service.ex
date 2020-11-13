@@ -42,7 +42,7 @@ defmodule Dudo.GameService do
     {:via, Registry, {:game_id_registry, game_id}}
   end
 
-  def new_game_id do
+  defp new_game_id do
     min = String.to_integer("1000", 36)
     max = String.to_integer("ZZZZ", 36)
 
