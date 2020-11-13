@@ -9,9 +9,15 @@
             <li class="player">
             <% end %>
 
-                <div class="player-name"><%= player.name %></div>
+                <div class="player-name">
+                    <div class="shim"></div>
+                    <div class="actual-name"><%= player.name %></div>
+                </div>
 
                 <div class="dice-and-buttons">
+                    <div class="dice-visibility-message">
+                        <%= @dice_visibility_message %>
+                    </div>
                     <div class="dice">
                         <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
                         <ul id="dice-<%= player.name %>" class="dice" phx-hook="Dice">
@@ -34,13 +40,6 @@
 
                     <div class="buttons">
                     <%= if player.name == @current_player.name do %>
-                        <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
-                            <input name="_method" type="hidden" value="delete" />
-                            <%= submit "Lose a dice" %>
-                        <% end %>
-                        <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
-                            <%= submit "Win a dice" %>
-                        <% end %>
                         <%= if @current_player.dice_visibility == :hidden do %>
                             <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
                                 <%= submit "Reveal dice" %>
@@ -48,6 +47,13 @@
                         <% end %>
                         <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
                             <%= submit "Shake dice", class: "shake" %>
+                        <% end %>
+                        <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
+                            <input name="_method" type="hidden" value="delete" />
+                            <%= submit "Lose a dice" %>
+                        <% end %>
+                        <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
+                            <%= submit "Win a dice" %>
                         <% end %>
                     <% end %>
                     </div>

@@ -125,4 +125,27 @@ defmodule Dudo.GameTest do
       assert game |> Game.can_shake_dice("bob") == false
     end
   end
+
+  describe "current_player_dice_visibility" do
+    test "when game is in closed mode, it returns :only_you_can_see if the player's dice are hidden" do
+      game = Game.new("alice")
+      assert game |> Game.current_player_dice_visibility("alice") == :only_you_can_see
+    end
+
+    test "when game is in closed mode, it returns :everyone_can_see iff the player's dice are revealed" do
+      game = Game.new("alice") |> Game.reveal_dice("alice")
+      assert game |> Game.current_player_dice_visibility("alice") == :everyone_can_see
+    end
+
+    test "when game is in open mode, it returns :everyone_else_can_see iff player's dice are hidden" do
+      game = Game.new("alice") |> Game.set_mode(:open)
+      assert game |> Game.current_player_dice_visibility("alice") == :everyone_else_can_see
+    end
+
+    test "when game is in open mode, it returns :everyone_can_see iff the player's dice are revealed" do
+      game = Game.new("alice") |> Game.set_mode(:open) |> Game.reveal_dice("alice")
+      assert game |> Game.current_player_dice_visibility("alice") == :everyone_can_see
+    end
+
+  end
 end

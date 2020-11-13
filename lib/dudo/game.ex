@@ -2,6 +2,7 @@ defmodule Dudo.Game do
   alias Dudo.Player
 
   @type game_mode :: :open | :closed
+  @type current_player_dice_visibility :: :only_you_can_see | :everyone_can_see | :everyone_else_can_see
   @type players :: [Player.t()]
 
   defstruct players: [], round: [], mode: :closed
@@ -71,6 +72,26 @@ defmodule Dudo.Game do
           true
         else
           find_player(game, dice_owner_name).dice_visibility == :revealed
+        end
+    end
+  end
+
+  def current_player_dice_visibility(game, current_player_name) do
+    player = game |> find_player(current_player_name)
+
+    case game.mode do
+      :closed ->
+        if player.dice_visibility == :hidden do
+          :only_you_can_see
+        else
+          :everyone_can_see
+        end
+
+      :open ->
+        if player.dice_visibility == :hidden do
+          :everyone_else_can_see
+        else
+          :everyone_can_see
         end
     end
   end

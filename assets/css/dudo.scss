@@ -41,27 +41,31 @@ li.player.current {
 div.player-name {
     vertical-align: middle;
     text-align: right;
-    height: 9.8rem;
-    line-height: 9.8rem;
+    height: 7rem;
+    line-height: 7rem;
     min-width: 15rem;
+}
+
+div.player-name .shim {
+    height: 3.2rem;
 }
 
 div.dice-and-buttons {
     margin-left: 3rem;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
 }
 
 ul.dice {
     overflow: hidden;
     margin-left: 0;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
 }
 
 div.buttons form {
     display: inline;
     margin-right: 1rem;
-}
-
-div.buttons button {
-    margin-bottom: 1.5rem;
 }
 
 li.dice {
