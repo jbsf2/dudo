@@ -43,4 +43,12 @@ defmodule Dudo.GameServiceTest do
     game = GameService.state(game_id)
     assert hd(game.players).name == "Player 1"
   end
+
+  test "game IDs don't contain zeros or ohs" do
+    for _n <- 1..1000 do
+      game_id = GameService.new_game_id()
+      assert String.match?(game_id, ~r/0/) == false
+      assert String.match?(game_id, ~r/O/) == false
+    end
+  end
 end

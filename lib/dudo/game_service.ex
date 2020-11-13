@@ -42,7 +42,7 @@ defmodule Dudo.GameService do
     {:via, Registry, {:game_id_registry, game_id}}
   end
 
-  defp new_game_id do
+  def new_game_id do
     min = String.to_integer("1000", 36)
     max = String.to_integer("ZZZZ", 36)
 
@@ -51,6 +51,18 @@ defmodule Dudo.GameService do
     |> :rand.uniform()
     |> Kernel.+(min)
     |> Integer.to_string(36)
+    |> replace("0")
+    |> replace("O")
+  end
+
+  defp replace(base36_string, string_to_replace) do
+    chars = '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ'
+
+    replacement_index = :rand.uniform(length(chars)) - 1
+    {replacement_char, _} = chars |> List.pop_at(replacement_index)
+    replacement_string = to_string([replacement_char])
+
+    base36_string |> String.replace(string_to_replace, replacement_string)
   end
 
   @impl true
