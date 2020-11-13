@@ -7,6 +7,7 @@ input[type='submit'] {
     padding: 0 1.5rem;
 }
 
+
 // Dudo styles
 
 div.topmargin {
@@ -29,7 +30,9 @@ li.player {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-start;
+    max-width: 70rem;
 }
+
 li.player.current {
     border: 2px solid black;
     border-radius: 10px;
@@ -57,11 +60,13 @@ div.buttons form {
     margin-right: 1rem;
 }
 
+div.buttons button {
+    margin-bottom: 1.5rem;
+}
+
 li.dice {
     float: left;
     margin-right: 1.6rem;
-    margin-top: .8rem;
-    margin-bottom: .8rem;
     padding: .4rem;
     background-color: #e7e7e7;
     width: 5.2rem;
