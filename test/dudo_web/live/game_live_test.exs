@@ -27,7 +27,7 @@ defmodule DudoWeb.GameLiveTest do
 
   test "redirected mount", %{conn: conn, game_path: game_path} do
     {:ok, _view, html} = live(conn, game_path)
-    assert html =~ "<td class=\"player-name\">Player 1</td>"
+    assert html =~ "<div class=\"player-name\">Player 1</div>"
   end
 
   test "losing and adding dice", %{conn: conn, game_path: game_path} do

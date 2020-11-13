@@ -1,6 +1,14 @@
-.container {
-    max-width: 100rem;
+// Phoenix overrides
+.button,
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+    padding: 0 1.5rem;
 }
+
+// Dudo styles
+
 div.topmargin {
     margin-top: 20rem;
 }
@@ -16,11 +24,44 @@ div.welcome input[type="text"] {
     margin-right: 1.2rem;
 }
 
+li.player {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+li.player.current {
+    border: 2px solid black;
+    border-radius: 10px;
+}
+
+div.player-name {
+    vertical-align: middle;
+    text-align: right;
+    height: 9.8rem;
+    line-height: 9.8rem;
+    min-width: 15rem;
+}
+
+div.dice-and-buttons {
+    margin-left: 3rem;
+}
+
+ul.dice {
+    overflow: hidden;
+    margin-left: 0;
+}
+
+div.buttons form {
+    display: inline;
+    margin-right: 1rem;
+}
 
 li.dice {
     float: left;
     margin-right: 1.6rem;
     margin-top: .8rem;
+    margin-bottom: .8rem;
     padding: .4rem;
     background-color: #e7e7e7;
     width: 5.2rem;
@@ -63,20 +104,4 @@ span.dot:nth-child(6) {
 }
 span.dot:nth-child(odd):last-child {
     grid-area: g;
-}
-
-td.player-name {
-    text-align: right;
-    font-size: 2.8rem;
-}
-
-table.players td {
-    border-bottom: none;
-}
-
-table.players form {
-    display: inline;
-    float: left;
-    margin-top: 3.2rem;
-    margin-right: 1.6rem;
 }
