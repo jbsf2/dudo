@@ -1,14 +1,19 @@
 defmodule DudoWeb.GameLive do
   use Phoenix.HTML
   use Phoenix.LiveView
-  import DudoWeb.Router.Helpers, [:login_path]
+
+  import DudoWeb.Router.Helpers, [:login_path, :live_path]
 
   alias Dudo.GameService
   alias Dudo.Game
 
   def mount(%{"id" => game_id}, %{"player_name" => current_player_name}, socket) do
-    DudoWeb.Endpoint.subscribe("game:#{game_id}")
-    {:ok, assigns(socket, game_id, current_player_name)}
+    if !GameService.exists?(game_id) || !GameService.player_exists?(game_id, current_player_name) do
+      {:ok, redirect(socket, to: login_path(socket, :new))}
+    else
+      DudoWeb.Endpoint.subscribe("game:#{game_id}")
+      {:ok, assigns(socket, game_id, current_player_name)}
+      end
   end
 
   @doc """
@@ -63,6 +68,7 @@ defmodule DudoWeb.GameLive do
     socket
     |> assign(:game_id, game_id)
     |> assign(:game, game)
+    |> assign(:invitation_link, live_url(socket, DudoWeb.GameLive, game_id))
     |> assign(:current_player, current_player)
     |> assign(:dice_visibility_message, dice_visibility_message)
   end

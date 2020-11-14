@@ -4,6 +4,7 @@ defmodule DudoWeb.GameController do
   alias Dudo.GameService
 
   plug :check_login
+  plug :check_game_exists when action == :join
 
   def create(conn, _params) do
     player_name = get_session(conn, :player_name)
@@ -28,6 +29,17 @@ defmodule DudoWeb.GameController do
       conn
       |> put_flash(:info, "Enter your name to join the game!")
       |> put_session(:after_login_redirect_path, conn.request_path)
+      |> redirect(to: Routes.login_path(conn, :new))
+      |> halt
+    else
+      conn
+    end
+  end
+
+  def check_game_exists(conn, _opts) do
+    %{"game" => %{"id" => game_id}} = conn.params
+    if !GameService.exists?(game_id) do
+      conn
       |> redirect(to: Routes.login_path(conn, :new))
       |> halt
     else

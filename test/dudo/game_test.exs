@@ -57,6 +57,12 @@ defmodule Dudo.GameTest do
     assert player.dice_visibility == :revealed
   end
 
+  test "player_exists?" do
+    game = Game.new("jane")
+    assert game |> Game.player_exists?("jane") == true
+    assert game |> Game.player_exists?("does not exist") == false
+  end
+
   describe "can_see_dice" do
     test "when viewer is the dice owner, returns true" do
       game =
@@ -146,6 +152,5 @@ defmodule Dudo.GameTest do
       game = Game.new("alice") |> Game.set_mode(:open) |> Game.reveal_dice("alice")
       assert game |> Game.current_player_dice_visibility("alice") == :everyone_can_see
     end
-
   end
 end

@@ -12,6 +12,14 @@ defmodule Dudo.GameService do
     game_id
   end
 
+  def exists?(game_id) do
+    length(Registry.lookup(:game_id_registry, game_id)) > 0
+  end
+
+  def player_exists?(game_id, player_name) do
+    state(game_id) |> Game.player_exists?(player_name)
+  end
+
   def state(game_id) do
     GenServer.call(via_tuple(game_id), :state)
   end

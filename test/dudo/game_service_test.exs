@@ -51,4 +51,16 @@ defmodule Dudo.GameServiceTest do
       assert String.match?(game_id, ~r/O/) == false
     end
   end
+
+  test "exists?" do
+    exists = GameService.new_game("Player 1")
+    assert GameService.exists?(exists) == true
+    assert GameService.exists?("does not exist") == false
+  end
+
+  test "player_exists?" do
+    game_id = GameService.new_game("exists")
+    assert GameService.player_exists?(game_id, "exists") == true
+    assert GameService.player_exists?(game_id, "does not exist") == false
+  end
 end

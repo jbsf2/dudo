@@ -1,64 +1,73 @@
 
+<div>
 <div class="topmargin">
-    <audio id="dice-audio" src="/audio/5-dice-1.mp3"></audio>
-    <ul class="players">
-        <%= for player <- @game.players do %>
-            <%= if @current_player.name == player.name do %>
-            <li class="player current">
-            <% else %>
-            <li class="player">
-            <% end %>
+    <%= if length(@game.players) == 1 do %>
+    <div class="invitation-link">There are no other players in the game. Invite players with this link: <%= link @invitation_link, to: @invitation_link %></div>
+    <% end %>
+</div>
+<audio id="dice-audio" src="/audio/5-dice-1.mp3"></audio>
+<ul class="players">
+    <%= for player <- @game.players do %>
+        <%= if @current_player.name == player.name do %>
+        <li class="player current">
+        <% else %>
+        <li class="player">
+        <% end %>
 
-                <div class="player-name">
-                    <div class="shim"></div>
-                    <div class="actual-name"><%= player.name %></div>
+            <div class="player-name">
+                <div class="shim"></div>
+                <div class="actual-name"><%= player.name %></div>
+            </div>
+
+            <div class="dice-and-buttons">
+                <div class="dice-visibility-message">
+                    <%= @dice_visibility_message %>
+                </div>
+                <div class="dice">
+                    <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
+                    <ul id="dice-<%= player.name %>" class="dice" phx-hook="Dice">
+                        <%= for dice <- player.dice do %>
+                        <li class="dice d<%= dice %>">
+                            <%= for _dots <- 1..dice do %>
+                            <span class="dot"></span>
+                            <% end %>
+                        </li>
+                        <% end %>
+                    </ul>
+                    <% else %>
+                    <ul class="dice">
+                        <%= for _dice <- player.dice do %>
+                        <li class="dice hidden"></li>
+                        <% end %>
+                    </ul>
+                    <% end %>
                 </div>
 
-                <div class="dice-and-buttons">
-                    <div class="dice-visibility-message">
-                        <%= @dice_visibility_message %>
-                    </div>
-                    <div class="dice">
-                        <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
-                        <ul id="dice-<%= player.name %>" class="dice" phx-hook="Dice">
-                            <%= for dice <- player.dice do %>
-                            <li class="dice d<%= dice %>">
-                                <%= for _dots <- 1..dice do %>
-                                <span class="dot"></span>
-                                <% end %>
-                            </li>
-                            <% end %>
-                        </ul>
-                        <% else %>
-                        <ul class="dice">
-                            <%= for _dice <- player.dice do %>
-                            <li class="dice hidden"></li>
-                            <% end %>
-                        </ul>
+                <div class="buttons">
+                <%= if player.name == @current_player.name do %>
+                    <%= if @current_player.dice_visibility == :hidden do %>
+                        <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
+                            <%= submit "Reveal dice" %>
                         <% end %>
-                    </div>
-
-                    <div class="buttons">
-                    <%= if player.name == @current_player.name do %>
-                        <%= if @current_player.dice_visibility == :hidden do %>
-                            <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
-                                <%= submit "Reveal dice" %>
-                            <% end %>
-                        <% end %>
-                        <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
-                            <%= submit "Shake dice", class: "shake" %>
-                        <% end %>
-                        <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
-                            <input name="_method" type="hidden" value="delete" />
-                            <%= submit "Lose a dice" %>
-                        <% end %>
-                        <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
-                            <%= submit "Win a dice" %>
+                    <% else %>
+                        <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
+                            <%= submit "Reveal dice", disabled: "disabled" %>
                         <% end %>
                     <% end %>
-                    </div>
+                    <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
+                        <%= submit "Shake dice", class: "shake" %>
+                    <% end %>
+                    <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
+                        <input name="_method" type="hidden" value="delete" />
+                        <%= submit "Lose a dice" %>
+                    <% end %>
+                    <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
+                        <%= submit "Win a dice" %>
+                    <% end %>
+                <% end %>
                 </div>
-            </li>
-        <% end %>
-    </ul>
+            </div>
+        </li>
+    <% end %>
+</ul>
 </div>

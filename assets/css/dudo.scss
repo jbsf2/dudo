@@ -11,7 +11,13 @@ input[type='submit'] {
 // Dudo styles
 
 div.topmargin {
-    margin-top: 20rem;
+    height: 20rem;
+    line-height: 20rem;
+}
+
+div.invitation-link {
+    line-height: 3.2rem;
+    padding-top: 6rem;
 }
 
 div.login input[type="text"] {

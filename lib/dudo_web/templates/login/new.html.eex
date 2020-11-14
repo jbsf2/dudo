@@ -1,4 +1,5 @@
-<div class="login topmargin">
+<div class="topmargin"></div>
+<div class="login">
     What's your name?
     <%= form_for @conn, Routes.login_path(@conn, :create), [as: :login], fn f -> %>
         <%= text_input f, :player_name, class: "focus" %>

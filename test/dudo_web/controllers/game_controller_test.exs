@@ -1,7 +1,7 @@
 defmodule DudoWeb.GameControllerTest do
   use DudoWeb.ConnCase
 
-  test "POST /create when logged in", %{conn: conn} do
+  test "POST /create not logged in", %{conn: conn} do
     conn = Plug.Test.init_test_session(conn, player_name: "Player 1")
     conn = post(conn, Routes.game_path(conn, :create))
 
@@ -26,5 +26,15 @@ defmodule DudoWeb.GameControllerTest do
       |> post(Routes.game_path(conn2, :join, %{"game" => %{"id" => game_id}}))
 
     assert redirected_to(conn2, 302) == Routes.live_path(conn2, DudoWeb.GameLive, game_id)
+  end
+
+  test "POST /join to a game that doesn't exist", %{conn: conn} do
+    # step 1: create the game and add Player 1
+    conn =
+      conn
+      |> Plug.Test.init_test_session(player_name: "Player 1")
+      |> post(Routes.game_path(conn, :join, %{"game" => %{"id" => "does not exist"}}))
+
+    assert redirected_to(conn, 302) == Routes.login_path(conn, :new)
   end
 end

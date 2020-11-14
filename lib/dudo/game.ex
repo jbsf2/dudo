@@ -81,18 +81,10 @@ defmodule Dudo.Game do
 
     case game.mode do
       :closed ->
-        if player.dice_visibility == :hidden do
-          :only_you_can_see
-        else
-          :everyone_can_see
-        end
+        if (player.dice_visibility == :hidden), do: :only_you_can_see, else: :everyone_can_see
 
       :open ->
-        if player.dice_visibility == :hidden do
-          :everyone_else_can_see
-        else
-          :everyone_can_see
-        end
+        if (player.dice_visibility == :hidden), do: :everyone_else_can_see, else: :everyone_can_see
     end
   end
 
@@ -104,6 +96,11 @@ defmodule Dudo.Game do
   @spec find_player(t(), String.t()) :: Player.t()
   def find_player(game, player_name) do
     Enum.find(game.players, &(&1.name == player_name))
+  end
+
+  @spec player_exists?(t(), String.t()) :: boolean()
+  def player_exists?(game, player_name) do
+    find_player(game, player_name) != nil
   end
 
   @spec update_player(t(), String.t(), (Player.t() -> Player.t())) :: t()

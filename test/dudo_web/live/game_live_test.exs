@@ -25,6 +25,21 @@ defmodule DudoWeb.GameLiveTest do
     {:ok, _view, _html} = live(conn)
   end
 
+
+  test "it redirects for games that don't exist",  %{conn: conn} do
+    bad_path = Routes.live_path(conn, DudoWeb.GameLive, "does not exist")
+    {:error, {:redirect, %{to: redirect_path}}} = live(conn, bad_path)
+    assert redirect_path == Routes.login_path(conn, :new)
+  end
+
+  test "it redirects for players who haven't joined the game",  %{game_path: game_path} do
+    conn =
+      Phoenix.ConnTest.build_conn()
+      |> Plug.Test.init_test_session(player_name: "Player who has not joined the game")
+    {:error, {:redirect, %{to: redirect_path}}} = live(conn, game_path)
+    assert redirect_path == Routes.login_path(conn, :new)
+  end
+
   test "redirected mount", %{conn: conn, game_path: game_path} do
     {:ok, _view, html} = live(conn, game_path)
     assert html =~ "<div class=\"actual-name\">Player 1</div>"
