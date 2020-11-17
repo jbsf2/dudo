@@ -48,7 +48,10 @@ defmodule DudoWeb.GameLiveTest do
       assert redirect_path == Routes.game_path(conn, :show, "does not exist")
     end
 
-    test "it redirects if the player doesn't have the game_id in their session", %{conn: conn, live_path: live_path} do
+    test "it redirects if the player doesn't have the game_id in their session", %{
+      conn: conn,
+      live_path: live_path
+    } do
       game_id = get_session(conn, :game_id)
 
       conn =
@@ -108,6 +111,7 @@ defmodule DudoWeb.GameLiveTest do
     game_id = String.slice(live_path, 7..10)
 
     conn2 = Phoenix.ConnTest.build_conn()
+
     conn2 =
       conn2
       |> Plug.Test.init_test_session(player_name: "Player 2")

@@ -15,14 +15,18 @@
         <% end %>
 
             <div class="player-name">
+                <%= if @current_player.name == player.name do %>
                 <div class="shim"></div>
+                <% end %>
                 <div class="actual-name"><%= player.name %></div>
             </div>
 
             <div class="dice-and-buttons">
+                <%= if @current_player.name == player.name do %>
                 <div class="dice-visibility-message">
                     <%= @dice_visibility_message %>
                 </div>
+                <% end %>
                 <div class="dice">
                     <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
                     <ul id="dice-<%= player.name %>" class="dice" phx-hook="Dice">

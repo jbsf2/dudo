@@ -5,10 +5,11 @@ defmodule DudoWeb.GameController do
   alias Dudo.GameService
 
   plug :check_login,
-    %{after_login_redirect_path: (&GameController.game_path/1)} when action == :show
+       %{after_login_redirect_path: &GameController.game_path/1} when action == :show
 
   plug :check_login,
-    %{after_login_redirect_path: (&GameController.welcome_path/1)} when action in [:create, :join]
+       %{after_login_redirect_path: &GameController.welcome_path/1}
+       when action in [:create, :join]
 
   plug :check_game_exists when action == :show
 
@@ -22,13 +23,14 @@ defmodule DudoWeb.GameController do
     conn |> redirect(to: Routes.game_path(conn, :show, game_id))
   end
 
-  def show(conn, params) do
+  def show(conn, _params) do
     %{path_params: %{"id" => game_id}} = conn
     player_name = get_session(conn, :player_name)
 
     if !GameService.player_exists?(game_id, player_name) do
       # new player; add them to the game
       GameService.add_player(game_id, player_name)
+
       conn
       |> put_session(:game_id, game_id)
       |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
@@ -39,7 +41,10 @@ defmodule DudoWeb.GameController do
       else
         # player name collision; direct player to provide a different name
         conn
-        |> put_flash(:info, "There is already a player named #{player_name}. Would you like to join with a different name?")
+        |> put_flash(
+          :info,
+          "There is already a player named #{player_name}. Would you like to join with a different name?"
+        )
         |> put_session(:after_login_redirect_path, Routes.game_path(conn, :show, game_id))
         |> redirect(to: Routes.login_path(conn, :new))
       end
@@ -64,7 +69,10 @@ defmodule DudoWeb.GameController do
     if !GameService.exists?(game_id) do
       conn
       |> delete_session(:game_id)
-      |> put_flash(:info, "Oops! Looks like that game is over. Join a different one or start a new one.")
+      |> put_flash(
+        :info,
+        "Oops! Looks like that game is over. Join a different one or start a new one."
+      )
       |> redirect(to: welcome_path(conn))
       |> halt
     else

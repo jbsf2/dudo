@@ -57,7 +57,9 @@ defmodule DudoWeb.GameControllerTest do
       assert redirected_to(conn, 302) == Routes.welcome_path(conn, :show)
     end
 
-    test "in the normal case, it sets game_id in the session and redirects to /games/live", %{conn: conn} do
+    test "in the normal case, it sets game_id in the session and redirects to /games/live", %{
+      conn: conn
+    } do
       conn = conn |> Plug.Test.init_test_session(player_name: "Player 1")
       conn = post(conn, Routes.game_path(conn, :create))
 
@@ -78,8 +80,10 @@ defmodule DudoWeb.GameControllerTest do
       %{id: game_id} = redirected_params(conn)
       conn |> get(Routes.game_path(conn, :show, game_id))
 
-      conn2 = Phoenix.ConnTest.build_conn()
-      |> Plug.Test.init_test_session(player_name: "Player 1")
+      conn2 =
+        Phoenix.ConnTest.build_conn()
+        |> Plug.Test.init_test_session(player_name: "Player 1")
+
       conn2 = conn2 |> get(Routes.game_path(conn, :show, game_id))
 
       assert redirected_to(conn2, 302) == Routes.login_path(conn2, :new)
@@ -97,8 +101,10 @@ defmodule DudoWeb.GameControllerTest do
       %{id: game_id} = redirected_params(conn)
       conn |> get(Routes.game_path(conn, :show, game_id))
 
-      conn2 = Phoenix.ConnTest.build_conn()
-      |> Plug.Test.init_test_session(player_name: "Player 1", game_id: game_id)
+      conn2 =
+        Phoenix.ConnTest.build_conn()
+        |> Plug.Test.init_test_session(player_name: "Player 1", game_id: game_id)
+
       conn2 = conn2 |> get(Routes.game_path(conn, :show, game_id))
 
       assert redirected_to(conn2, 302) == Routes.live_path(conn, DudoWeb.GameLive, game_id)

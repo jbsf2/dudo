@@ -12,6 +12,7 @@ defmodule DudoWeb.LoginController do
     conn
     |> put_session(:player_name, player.name)
     |> delete_session(:after_login_redirect_path)
+    |> delete_session(:game_id)
     |> redirect(to: redirect_path)
   end
 end

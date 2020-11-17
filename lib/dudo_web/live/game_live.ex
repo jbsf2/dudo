@@ -4,6 +4,7 @@ defmodule DudoWeb.GameLive do
 
   import DudoWeb.Router.Helpers, [:login_path, :live_path]
 
+  alias Phoenix.LiveView.Socket
   alias Dudo.GameService
   alias Dudo.Game
 
@@ -14,20 +15,15 @@ defmodule DudoWeb.GameLive do
     {:ok, redirect(socket, to: login_path(socket, :new))}
   end
 
-  def mount(%{"id" => game_id}, session, socket) do
-    %{"player_name" => player_name} = session
-
-    case connected?(socket) do
-      false ->
-        unconnected_mount(game_id, session, socket)
-
-      true ->
-        DudoWeb.Endpoint.subscribe("game:#{game_id}")
-        {:ok, assigns(socket, game_id, player_name)}
-    end
+  def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
+      when connected? do
+    player_name = session |> Map.get("player_name")
+    DudoWeb.Endpoint.subscribe("game:#{game_id}")
+    {:ok, assigns(socket, game_id, player_name)}
   end
 
-  defp unconnected_mount(game_id, session, socket) do
+  def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
+      when connected? == false do
     player_name = session |> Map.get("player_name")
     session_game_id = session |> Map.get("game_id")
 
