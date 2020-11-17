@@ -4,14 +4,14 @@ defmodule Dudo.GameServiceTest do
   alias Dudo.GameService
 
   test "adding a player" do
-    game_id = GameService.new_game("Bob")
-    game = GameService.state(game_id)
+    game = GameService.new_game() |> GameService.add_player("Bob")
     player = hd(game.players)
     assert player.name == "Bob"
   end
 
   test "losing and adding dice" do
-    game_id = GameService.new_game("Bob")
+    game_id = GameService.new_game()
+    GameService.add_player(game_id, "Bob")
     GameService.add_player(game_id, "Alice")
     GameService.lose_dice(game_id, "Bob")
 
@@ -27,7 +27,8 @@ defmodule Dudo.GameServiceTest do
   end
 
   test "querying state doesn't lose state" do
-    game_id = GameService.new_game("Bob")
+    game_id = GameService.new_game()
+    GameService.add_player(game_id, "Bob")
     GameService.add_player(game_id, "Alice")
 
     game = GameService.state(game_id)
@@ -39,27 +40,29 @@ defmodule Dudo.GameServiceTest do
   end
 
   test "create_game starts a game and adds a player" do
-    game_id = GameService.new_game("Player 1")
-    game = GameService.state(game_id)
+    game_id = GameService.new_game()
+    game = GameService.add_player(game_id, "Player 1")
     assert hd(game.players).name == "Player 1"
   end
 
   test "game IDs don't contain zeros or ohs" do
     for _n <- 1..1000 do
-      game_id = GameService.new_game("Player 1")
+      game_id = GameService.new_game()
+      GameService.add_player(game_id, "Player 1")
       assert String.match?(game_id, ~r/0/) == false
       assert String.match?(game_id, ~r/O/) == false
     end
   end
 
   test "exists?" do
-    exists = GameService.new_game("Player 1")
+    exists = GameService.new_game()
     assert GameService.exists?(exists) == true
     assert GameService.exists?("does not exist") == false
   end
 
   test "player_exists?" do
-    game_id = GameService.new_game("exists")
+    game_id = GameService.new_game()
+    GameService.add_player(game_id, "exists")
     assert GameService.player_exists?(game_id, "exists") == true
     assert GameService.player_exists?(game_id, "does not exist") == false
   end

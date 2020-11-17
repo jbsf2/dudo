@@ -4,10 +4,10 @@ defmodule Dudo.GameService do
   alias Phoenix.PubSub
   alias Dudo.Game
 
-  def new_game(player_name) do
+  def new_game() do
     game_id = new_game_id()
 
-    DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id, player_name}})
+    DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id}})
 
     game_id
   end
@@ -32,10 +32,10 @@ defmodule Dudo.GameService do
   def reveal_dice(game_id, player_name),
     do: call_and_broadcast(:reveal_dice, game_id, player_name)
 
-  def start_link({game_id, player_name}) do
+  def start_link({game_id}) do
     GenServer.start_link(
       __MODULE__,
-      Game.new(player_name),
+      Game.new(),
       name: via_tuple(game_id)
     )
   end

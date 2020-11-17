@@ -2,7 +2,8 @@ defmodule Dudo.Game do
   alias Dudo.Player
 
   @type game_mode :: :open | :closed
-  @type current_player_dice_visibility :: :only_you_can_see | :everyone_can_see | :everyone_else_can_see
+  @type current_player_dice_visibility ::
+          :only_you_can_see | :everyone_can_see | :everyone_else_can_see
   @type players :: [Player.t()]
 
   defstruct players: [], round: [], mode: :closed
@@ -12,6 +13,11 @@ defmodule Dudo.Game do
           round: players(),
           mode: game_mode()
         }
+
+  @spec new() :: t()
+  def new() do
+    %Dudo.Game{}
+  end
 
   @spec new(String.t()) :: t()
   def new(player_name) do
@@ -81,10 +87,10 @@ defmodule Dudo.Game do
 
     case game.mode do
       :closed ->
-        if (player.dice_visibility == :hidden), do: :only_you_can_see, else: :everyone_can_see
+        if player.dice_visibility == :hidden, do: :only_you_can_see, else: :everyone_can_see
 
       :open ->
-        if (player.dice_visibility == :hidden), do: :everyone_else_can_see, else: :everyone_can_see
+        if player.dice_visibility == :hidden, do: :everyone_else_can_see, else: :everyone_can_see
     end
   end
 

@@ -22,7 +22,8 @@ defmodule DudoWeb.Router do
     get "/welcome", WelcomeController, :show
     post "/games", GameController, :create
     post "/games/join", GameController, :join
-    live "/games/:id", GameLive
+    get "/games/:id", GameController, :show
+    live "/games/:id/play", GameLive
   end
 
   # Other scopes may use custom stacks.

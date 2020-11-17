@@ -7,21 +7,35 @@ defmodule DudoWeb.GameLive do
   alias Dudo.GameService
   alias Dudo.Game
 
-  def mount(%{"id" => game_id}, %{"player_name" => current_player_name}, socket) do
-    if !GameService.exists?(game_id) || !GameService.player_exists?(game_id, current_player_name) do
-      {:ok, redirect(socket, to: login_path(socket, :new))}
-    else
-      DudoWeb.Endpoint.subscribe("game:#{game_id}")
-      {:ok, assigns(socket, game_id, current_player_name)}
-      end
-  end
-
   @doc """
   Redirects to login when user not logged in.
   """
-  def mount(%{"id" => _game_id}, %{}, socket) do
-    socket = redirect(socket, to: login_path(socket, :new))
-    {:ok, socket}
+  def mount(_params, session, socket) when session == %{} do
+    {:ok, redirect(socket, to: login_path(socket, :new))}
+  end
+
+  def mount(%{"id" => game_id}, session, socket) do
+    %{"player_name" => player_name} = session
+
+    case connected?(socket) do
+      false ->
+        unconnected_mount(game_id, session, socket)
+
+      true ->
+        DudoWeb.Endpoint.subscribe("game:#{game_id}")
+        {:ok, assigns(socket, game_id, player_name)}
+    end
+  end
+
+  defp unconnected_mount(game_id, session, socket) do
+    player_name = session |> Map.get("player_name")
+    session_game_id = session |> Map.get("game_id")
+
+    if !GameService.exists?(game_id) || game_id != session_game_id do
+      {:ok, redirect(socket, to: game_path(socket, :show, game_id))}
+    else
+      {:ok, assigns(socket, game_id, player_name)}
+    end
   end
 
   @function_map %{
@@ -62,7 +76,9 @@ defmodule DudoWeb.GameLive do
     game = GameService.state(game_id)
     current_player = Game.find_player(game, current_player_name)
 
-    current_player_dice_visibility = game |> Game.current_player_dice_visibility(current_player_name)
+    current_player_dice_visibility =
+      game |> Game.current_player_dice_visibility(current_player_name)
+
     dice_visibility_message = @dice_visibility_messages |> Map.get(current_player_dice_visibility)
 
     socket
