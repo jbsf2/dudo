@@ -34,12 +34,12 @@ defmodule DudoWeb.GameLiveTest do
       assert html =~ "<div class=\"actual-name\">Player 1</div>"
     end
 
-    test "redirect to login when user not logged in" do
+    test "redirect when user not logged in" do
       conn = Phoenix.ConnTest.build_conn()
       live_path = Routes.live_path(conn, DudoWeb.GameLive, "test_id")
       conn = conn |> get(live_path)
 
-      assert redirected_to(conn, 302) == Routes.login_path(conn, :new)
+      assert redirected_to(conn, 302) == Routes.game_path(conn, :show, "test_id")
     end
 
     test "it redirects for games that don't exist", %{conn: conn} do

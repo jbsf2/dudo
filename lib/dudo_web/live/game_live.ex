@@ -9,10 +9,10 @@ defmodule DudoWeb.GameLive do
   alias Dudo.Game
 
   @doc """
-  Redirects to login when user not logged in.
+  Redirect when user not logged in.
   """
-  def mount(_params, session, socket) when session == %{} do
-    {:ok, redirect(socket, to: login_path(socket, :new))}
+  def mount(%{"id" => game_id}, session, socket) when session == %{} do
+    {:ok, redirect(socket, to: game_path(socket, :show, game_id))}
   end
 
   def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
