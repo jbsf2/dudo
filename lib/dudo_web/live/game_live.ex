@@ -18,7 +18,7 @@ defmodule DudoWeb.GameLive do
   def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
       when connected? do
     player_name = session |> Map.get("player_name")
-    DudoWeb.Endpoint.subscribe("game:#{game_id}")
+    :ok = DudoWeb.Endpoint.subscribe("game:#{game_id}")
     {:ok, assigns(socket, game_id, player_name)}
   end
 

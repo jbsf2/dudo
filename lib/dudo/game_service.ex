@@ -7,7 +7,7 @@ defmodule Dudo.GameService do
   def new_game() do
     game_id = new_game_id()
 
-    DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id}})
+    {:ok, _pid} = DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id}})
 
     game_id
   end
@@ -42,7 +42,7 @@ defmodule Dudo.GameService do
 
   defp call_and_broadcast(action, game_id, player_name) do
     game = GenServer.call(via_tuple(game_id), {action, player_name})
-    PubSub.broadcast(Dudo.PubSub, "game:#{game_id}", {action, game, player_name})
+    :ok = PubSub.broadcast(Dudo.PubSub, "game:#{game_id}", {action, game, player_name})
     game
   end
 
