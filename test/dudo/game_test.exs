@@ -112,26 +112,6 @@ defmodule Dudo.GameTest do
     end
   end
 
-  describe "shaking dice permissions" do
-    test "a player can't shake again until someone loses or wins a dice" do
-      game =
-        Game.new("alice")
-        |> Game.add_player("bob")
-        |> Game.add_player("chris")
-
-      assert game |> Game.can_shake_dice("alice") == false
-      assert game |> Game.can_shake_dice("bob") == false
-
-      game = game |> Game.lose_dice("alice")
-      assert game |> Game.can_shake_dice("alice") == false
-      assert game |> Game.can_shake_dice("bob") == true
-
-      game = game |> Game.shake_dice("bob")
-      assert game |> Game.can_shake_dice("alice") == false
-      assert game |> Game.can_shake_dice("bob") == false
-    end
-  end
-
   describe "current_player_dice_visibility" do
     test "when game is in closed mode, it returns :only_you_can_see if the player's dice are hidden" do
       game = Game.new("alice")

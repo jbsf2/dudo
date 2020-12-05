@@ -94,11 +94,6 @@ defmodule Dudo.Game do
     end
   end
 
-  @spec can_shake_dice(t(), String.t()) :: boolean()
-  def can_shake_dice(game, player_name) do
-    game.round |> Enum.member?(player_name) == false
-  end
-
   @spec find_player(t(), String.t()) :: Player.t()
   def find_player(game, player_name) do
     Enum.find(game.players, &(&1.name == player_name))
