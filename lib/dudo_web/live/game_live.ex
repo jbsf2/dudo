@@ -37,7 +37,8 @@ defmodule DudoWeb.GameLive do
   @function_map %{
     "lose_dice" => &GameService.lose_dice/2,
     "add_dice" => &GameService.add_dice/2,
-    "reveal_dice" => &GameService.reveal_dice/2,
+    "see_dice" => &GameService.see_dice/2,
+    "show_dice" => &GameService.show_dice/2,
     "shake_dice" => &GameService.shake_dice/2
   }
 
@@ -63,9 +64,10 @@ defmodule DudoWeb.GameLive do
   end
 
   @dice_visibility_messages %{
+    nobody_can_see: "Nobody can see your dice",
     only_you_can_see: "Only you can see your dice",
     everyone_can_see: "Everyone can see your dice",
-    everyone_else_can_see: "You can't see your dice, but the other players can"
+    everyone_else_can_see: "The other players can see your dice"
   }
 
   defp assigns(socket, game_id, current_player_name) do

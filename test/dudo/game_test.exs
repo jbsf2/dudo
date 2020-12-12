@@ -7,7 +7,6 @@ defmodule Dudo.GameTest do
     game = %Dudo.Game{}
     assert game != nil
     assert game.players == []
-    assert game.mode == :closed
   end
 
   test "adding a player" do
@@ -31,32 +30,6 @@ defmodule Dudo.GameTest do
     assert length(marcia.dice) == 5
   end
 
-  test "losing or adding dice resets game to closed mode" do
-    game =
-      Game.new("marcia")
-      |> Game.set_mode(:open)
-      |> Game.lose_dice("marcia")
-
-    assert game.mode == :closed
-
-    game =
-      game
-      |> Game.set_mode(:open)
-      |> Game.add_dice("marcia")
-
-    assert game.mode == :closed
-  end
-
-  test "revealing dice" do
-    game =
-      Game.new("jane")
-      |> Game.reveal_dice("jane")
-
-    player = Game.find_player(game, "jane")
-
-    assert player.dice_visibility == :revealed
-  end
-
   test "player_exists?" do
     game = Game.new("jane")
     assert game |> Game.player_exists?("jane") == true
@@ -64,72 +37,45 @@ defmodule Dudo.GameTest do
   end
 
   describe "can_see_dice" do
-    test "when viewer is the dice owner, returns true" do
+    test "when viewer is the dice owner, returns player_can_see_dice" do
       game =
-        Game.new("hidden")
-        |> Game.add_player("revealed")
-        |> Game.reveal_dice("revealed")
+        Game.new("Player 1")
+        |> Game.add_player("Player 2")
+        |> Game.see_dice("Player 1")
 
-      assert game |> Game.can_see_dice("hidden", "hidden") == true
-      assert game |> Game.can_see_dice("revealed", "revealed") == true
+      assert game |> Game.can_see_dice(viewer: "Player 1", dice_owner: "Player 1") == true
+      assert game |> Game.can_see_dice(viewer: "Player 2", dice_owner: "Player 2") == false
     end
 
-    test "when viewer is not the dice owner, returns the owner's dice_visibility" do
+    test "when viewer is not the dice owner, returns others_can_see_dice" do
       game =
-        Game.new("hidden")
-        |> Game.add_player("revealed")
-        |> Game.reveal_dice("revealed")
-        |> Game.add_player("viewer")
+        Game.new("Player 1")
+        |> Game.add_player("Player 2")
+        |> Game.show_dice("Player 1")
 
-      assert game |> Game.can_see_dice("viewer", "hidden") == false
-      assert game |> Game.can_see_dice("viewer", "revealed") == true
-    end
-
-    test "when game is in open mode, players can see others' dice but not their own, until they're revealed" do
-      game =
-        Game.new("alice")
-        |> Game.add_player("bob")
-        |> Game.set_mode(:open)
-
-      assert game |> Game.can_see_dice("alice", "alice") == false
-      assert game |> Game.can_see_dice("alice", "bob") == true
-      assert game |> Game.can_see_dice("bob", "alice") == true
-      assert game |> Game.can_see_dice("bob", "bob") == false
-
-      game = game |> Game.reveal_dice("alice")
-
-      assert game |> Game.can_see_dice("alice", "alice") == true
-      assert game |> Game.can_see_dice("alice", "bob") == true
-      assert game |> Game.can_see_dice("bob", "alice") == true
-      assert game |> Game.can_see_dice("bob", "bob") == false
-
-      game = game |> Game.reveal_dice("bob")
-
-      assert game |> Game.can_see_dice("alice", "alice") == true
-      assert game |> Game.can_see_dice("alice", "bob") == true
-      assert game |> Game.can_see_dice("bob", "alice") == true
-      assert game |> Game.can_see_dice("bob", "bob") == true
+      assert game |> Game.can_see_dice(viewer: "Player 2", dice_owner: "Player 1") == true
+      assert game |> Game.can_see_dice(viewer: "Player 1", dice_owner: "Player 2") == false
     end
   end
 
   describe "current_player_dice_visibility" do
-    test "when game is in closed mode, it returns :only_you_can_see if the player's dice are hidden" do
+    test "when the player has neither seen nor shown their dice" do
       game = Game.new("alice")
+      assert game |> Game.current_player_dice_visibility("alice") == :nobody_can_see
+    end
+
+    test "when the player has seen but not shown their dice" do
+      game = Game.new("alice") |> Game.see_dice("alice")
       assert game |> Game.current_player_dice_visibility("alice") == :only_you_can_see
     end
 
-    test "when game is in closed mode, it returns :everyone_can_see iff the player's dice are revealed" do
-      game = Game.new("alice") |> Game.reveal_dice("alice")
-      assert game |> Game.current_player_dice_visibility("alice") == :everyone_can_see
-    end
-
-    test "when game is in open mode, it returns :everyone_else_can_see iff player's dice are hidden" do
-      game = Game.new("alice") |> Game.set_mode(:open)
+    test "when the player has shown but not seen their dice" do
+      game = Game.new("alice") |> Game.show_dice("alice")
       assert game |> Game.current_player_dice_visibility("alice") == :everyone_else_can_see
     end
 
-    test "when game is in open mode, it returns :everyone_can_see iff the player's dice are revealed" do
-      game = Game.new("alice") |> Game.set_mode(:open) |> Game.reveal_dice("alice")
+    test "when the player has seen and shown their dice" do
+      game = Game.new("alice") |> Game.see_dice("alice") |> Game.show_dice("alice")
       assert game |> Game.current_player_dice_visibility("alice") == :everyone_can_see
     end
   end

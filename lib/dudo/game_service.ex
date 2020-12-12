@@ -7,9 +7,10 @@ defmodule Dudo.GameService do
   def new_game() do
     game_id = new_game_id()
 
-    {:ok, _pid} = DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id}})
-
-    game_id
+    case DynamicSupervisor.start_child(:game_supervisor, {__MODULE__, {game_id}}) do
+      {:ok, _pid} -> game_id
+      {:error, {:already_started, _pid}} -> new_game()
+    end
   end
 
   def exists?(game_id) do
@@ -28,9 +29,8 @@ defmodule Dudo.GameService do
   def add_dice(game_id, player_name), do: call_and_broadcast(:add_dice, game_id, player_name)
   def lose_dice(game_id, player_name), do: call_and_broadcast(:lose_dice, game_id, player_name)
   def shake_dice(game_id, player_name), do: call_and_broadcast(:shake_dice, game_id, player_name)
-
-  def reveal_dice(game_id, player_name),
-    do: call_and_broadcast(:reveal_dice, game_id, player_name)
+  def see_dice(game_id, player_name), do: call_and_broadcast(:see_dice, game_id, player_name)
+  def show_dice(game_id, player_name), do: call_and_broadcast(:show_dice, game_id, player_name)
 
   def start_link({game_id}) do
     GenServer.start_link(
@@ -87,14 +87,15 @@ defmodule Dudo.GameService do
     add_player: &Game.add_player/2,
     add_dice: &Game.add_dice/2,
     lose_dice: &Game.lose_dice/2,
-    reveal_dice: &Game.reveal_dice/2,
+    see_dice: &Game.see_dice/2,
+    show_dice: &Game.show_dice/2,
     shake_dice: &Game.shake_dice/2
   }
 
   @impl true
-  def handle_call({action, player_name}, _from, game) do
+  def handle_call({action, arg}, _from, game) do
     fun = Map.get(@function_map, action)
-    game = game |> fun.(player_name)
+    game = game |> fun.(arg)
     {:reply, game, game}
   end
 end

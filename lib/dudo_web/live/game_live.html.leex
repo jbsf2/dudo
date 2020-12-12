@@ -6,6 +6,7 @@
     <% end %>
 </div>
 <audio id="dice-audio" src="/audio/5-dice-1.mp3"></audio>
+
 <ul class="players">
     <%= for player <- @game.players do %>
         <%= if @current_player.name == player.name do %>
@@ -28,7 +29,7 @@
                 </div>
                 <% end %>
                 <div class="dice">
-                    <%= if Game.can_see_dice(@game, @current_player.name, player.name) do %>
+                    <%= if Game.can_see_dice(@game, viewer: @current_player.name, dice_owner: player.name) do %>
                     <ul id="dice-<%= player.name %>" class="dice" phx-hook="Dice">
                         <%= for dice <- player.dice do %>
                         <li class="dice d<%= dice %>">
@@ -49,18 +50,27 @@
 
                 <div class="buttons">
                 <%= if player.name == @current_player.name do %>
-                    <%= if @current_player.dice_visibility == :hidden do %>
-                        <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
-                            <%= submit "Reveal dice" %>
+                    <div>
+                    <%= if @current_player.player_can_see_dice == false do %>
+                        <%= form_for :dice, "#", [phx_submit: :see_dice], fn _ -> %>
+                            <%= submit "See my dice" %>
                         <% end %>
                     <% else %>
-                        <%= form_for :dice, "#", [phx_submit: :reveal_dice], fn _ -> %>
-                            <%= submit "Reveal dice", disabled: "disabled" %>
+                        <%= form_for :dice, "#", [phx_submit: :see_dice], fn _ -> %>
+                            <%= submit "See my dice", disabled: "disabled" %>
                         <% end %>
                     <% end %>
-                    <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
-                        <%= submit "Shake dice", class: "shake" %>
+                    <%= if @current_player.others_can_see_dice == false do %>
+                        <%= form_for :dice, "#", [phx_submit: :show_dice], fn _ -> %>
+                            <%= submit "Show my dice to everyone else" %>
+                        <% end %>
+                    <% else %>
+                        <%= form_for :dice, "#", [phx_submit: :show_dice], fn _ -> %>
+                            <%= submit "Show my dice to everyone else", disabled: "disabled" %>
+                        <% end %>
                     <% end %>
+                    </div>
+                    <div>
                     <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
                         <input name="_method" type="hidden" value="delete" />
                         <%= submit "Lose a dice" %>
@@ -68,6 +78,10 @@
                     <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
                         <%= submit "Win a dice" %>
                     <% end %>
+                    <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
+                        <%= submit "Shake dice", class: "shake" %>
+                    <% end %>
+                    </div>
                 <% end %>
                 </div>
             </div>

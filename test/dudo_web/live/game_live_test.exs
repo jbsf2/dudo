@@ -106,7 +106,7 @@ defmodule DudoWeb.GameLiveTest do
     assert render(view2) |> dice_count() == 9
   end
 
-  test "other players can see dice after reveal", %{conn: conn1, live_path: live_path} do
+  test "other players can see dice after show", %{conn: conn1, live_path: live_path} do
     # live_path will look like "/games/ABCD/play"
     game_id = String.slice(live_path, 7..10)
 
@@ -119,20 +119,20 @@ defmodule DudoWeb.GameLiveTest do
 
     # step 2: connect both players via LiveView, make sure they have expected dice count
     {:ok, view1, html1} = live(conn1, live_path)
-    assert visible_dice_count(html1) == 5
+    assert visible_dice_count(html1) == 0
 
     {:ok, view2, html2} = live(conn2, live_path)
-    assert visible_dice_count(html2) == 5
+    assert visible_dice_count(html2) == 0
 
-    # step 3: lose dice for Player 1
-    html1 = render_submit(view1, :reveal_dice)
-    # player 1 should still see only her 5 dice
+    # Player 1 shows their dice
+    html1 = render_submit(view1, :show_dice)
+    assert visible_dice_count(html1) == 0
+    assert render(view2) |> visible_dice_count() == 5
+
+    # Player 1 sees their dice
+    html1 = render_submit(view1, :see_dice)
     assert visible_dice_count(html1) == 5
-
-    # step 4: assert view for Player 2 is updated
-    # player 2 should see all 10 dice as visible
-    # TODO: is this aysync-safe?
-    assert render(view2) |> visible_dice_count() == 10
+    assert render(view2) |> visible_dice_count() == 5
   end
 
   defp dice_count(html) do

@@ -45,10 +45,17 @@ defmodule Dudo.PlayerTest do
     assert player.dice != shaked.dice
   end
 
-  test "reveal_dice" do
+  test "see_dice" do
     player = Player.new("Jill")
-    assert player.dice_visibility == :hidden
-    player = Player.reveal_dice(player)
-    assert player.dice_visibility == :revealed
+    assert player.player_can_see_dice == :false
+    player = Player.see_dice(player)
+    assert player.player_can_see_dice == :true
+  end
+
+  test "show_dice" do
+    player = Player.new("Jill")
+    assert player.others_can_see_dice == :false
+    player = Player.show_dice(player)
+    assert player.others_can_see_dice == :true
   end
 end
