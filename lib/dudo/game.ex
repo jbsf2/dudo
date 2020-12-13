@@ -5,11 +5,10 @@ defmodule Dudo.Game do
           :only_you_can_see | :everyone_can_see | :everyone_else_can_see
   @type players :: [Player.t()]
 
-  defstruct players: [], round: []
+  defstruct players: []
 
   @type t :: %Dudo.Game{
-          players: players(),
-          round: players()
+          players: players()
         }
 
   @spec new() :: t()
@@ -27,24 +26,19 @@ defmodule Dudo.Game do
     new_player = Player.new(player_name)
 
     game
-    |> Map.put(:players, game.players ++ [new_player])
-    |> add_player_to_round(player_name)
+    |> Map.put(:players, [new_player | game.players])
   end
 
   @spec lose_dice(t(), String.t()) :: t()
   def lose_dice(game, player_name) do
     game
     |> update_player(player_name, &Player.lose_dice/1)
-    |> begin_new_round()
-    |> add_player_to_round(player_name)
   end
 
   @spec add_dice(t(), String.t()) :: t()
   def add_dice(game, player_name) do
     game
     |> update_player(player_name, &Player.add_dice/1)
-    |> begin_new_round()
-    |> add_player_to_round(player_name)
   end
 
   @spec see_dice(t(), String.t()) :: t()
@@ -61,7 +55,6 @@ defmodule Dudo.Game do
   def shake_dice(game, player_name) do
     game
     |> update_player(player_name, &Player.shake_dice/1)
-    |> add_player_to_round(player_name)
   end
 
   @spec can_see_dice(t(), viewer: String.t(), dice_owner: String.t()) :: boolean()
@@ -105,15 +98,5 @@ defmodule Dudo.Game do
       end)
 
     game |> Map.put(:players, players)
-  end
-
-  @spec begin_new_round(t()) :: t()
-  defp begin_new_round(game) do
-    game |> Map.put(:round, [])
-  end
-
-  @spec add_player_to_round(t(), String.t()) :: t()
-  defp add_player_to_round(game, player_name) do
-    game |> Map.put(:round, game.round ++ [player_name])
   end
 end
