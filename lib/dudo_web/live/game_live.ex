@@ -42,6 +42,19 @@ defmodule DudoWeb.GameLive do
     "shake_dice" => &GameService.shake_dice/2
   }
 
+  def handle_event("start_new_game", _params, socket) do
+    %{game_id: game_id, current_player: current_player} = socket.assigns
+    new_game_id = GameService.new_game()
+    new_game_link = live_url(socket, DudoWeb.GameLive, new_game_id)
+
+    socket =
+      socket
+      |> assigns(game_id, current_player.name)
+      |> assign(:new_game_link, new_game_link)
+
+    {:noreply, socket}
+  end
+
   def handle_event(action, _params, socket) do
     %{game_id: game_id, current_player: current_player} = socket.assigns
     fun = Map.get(@function_map, action)
@@ -79,11 +92,14 @@ defmodule DudoWeb.GameLive do
 
     dice_visibility_message = @dice_visibility_messages |> Map.get(current_player_dice_visibility)
 
+    new_game_link = socket.assigns[:new_game_link]
+
     socket
     |> assign(:game_id, game_id)
     |> assign(:game, game)
     |> assign(:invitation_link, live_url(socket, DudoWeb.GameLive, game_id))
     |> assign(:current_player, current_player)
     |> assign(:dice_visibility_message, dice_visibility_message)
+    |> assign(:new_game_link, new_game_link)
   end
 end

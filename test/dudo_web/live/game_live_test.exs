@@ -74,6 +74,13 @@ defmodule DudoWeb.GameLiveTest do
     assert dice_count(html) == 5
   end
 
+  test "start new game", %{conn: conn, live_path: live_path} do
+    {:ok, view, html} = live(conn, live_path)
+    assert invitation_link_present?(html) == false
+    html = render_submit(view, "start_new_game")
+    assert invitation_link_present?(html) == true
+  end
+
   test "updating the other players when a player changes the game state", %{
     conn: conn1,
     live_path: live_path
@@ -141,5 +148,9 @@ defmodule DudoWeb.GameLiveTest do
 
   defp visible_dice_count(html) do
     html |> xpath(~x"count(//li[contains(@class, 'dice')][not(contains(@class, 'hidden'))])")
+  end
+
+  defp invitation_link_present?(html) do
+    html |> xpath(~x"count(//a[@id='new_game_link'])") > 0
   end
 end

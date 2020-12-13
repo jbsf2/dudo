@@ -2,8 +2,21 @@
 <div>
 <div class="topmargin">
     <%= if length(@game.players) == 1 do %>
-    <div class="invitation-link">There are no other players in the game. Invite players with this link: <%= link @invitation_link, to: @invitation_link %></div>
+        <div class="invitation-link">There are no other players in the game. Invite players with this link: <%= link @invitation_link, to: @invitation_link %></div>
+    <% else %>
+        <div class="invitation-link">Invite other players: <%= link @invitation_link, to: @invitation_link %></div>
     <% end %>
+
+    <%= if @new_game_link == nil do %>
+        <div class="new-game">
+            <%= form_for :new_game, "#", [phx_submit: :start_new_game], fn _ -> %>
+                <%= submit "Start a new game" %>
+            <% end %>
+        </div>
+    <% else %>
+        <div class="new-game">Join the new game: <%= link @new_game_link, to: @new_game_link, id: :new_game_link %></div>
+    <% end %>
+
 </div>
 <audio id="dice-audio" src="/audio/5-dice-1.mp3"></audio>
 
