@@ -4,15 +4,15 @@ defmodule Dudo.GameServiceTest do
   alias Dudo.GameService
 
   test "adding a player" do
-    game = GameService.new_game() |> GameService.add_player("Bob")
+    game = GameService.new_game() |> GameService.add_player("Bob", "Bob")
     player = hd(game.players)
     assert player.name == "Bob"
   end
 
   test "losing and adding dice" do
     game_id = GameService.new_game()
-    GameService.add_player(game_id, "Bob")
-    GameService.add_player(game_id, "Alice")
+    GameService.add_player(game_id, "Bob", "Bob")
+    GameService.add_player(game_id, "Alice", "Alice")
     GameService.lose_dice(game_id, "Bob")
 
     game = GameService.state(game_id)
@@ -28,27 +28,27 @@ defmodule Dudo.GameServiceTest do
 
   test "querying state doesn't lose state" do
     game_id = GameService.new_game()
-    GameService.add_player(game_id, "Bob")
-    GameService.add_player(game_id, "Alice")
+    GameService.add_player(game_id, "Bob", "Bob")
+    GameService.add_player(game_id, "Alice", "Alice")
 
     game = GameService.state(game_id)
     assert length(game.players) == 2
 
-    GameService.add_player(game_id, "Jane")
+    GameService.add_player(game_id, "Jane", "Jane")
     game = GameService.state(game_id)
     assert length(game.players) == 3
   end
 
   test "create_game starts a game and adds a player" do
     game_id = GameService.new_game()
-    game = GameService.add_player(game_id, "Player 1")
+    game = GameService.add_player(game_id, "Player 1", "Player 1")
     assert hd(game.players).name == "Player 1"
   end
 
   test "game IDs don't contain zeros or ohs" do
     for _n <- 1..1000 do
       game_id = GameService.new_game()
-      GameService.add_player(game_id, "Player 1")
+      GameService.add_player(game_id, "Player 1", "Player 1")
       assert String.match?(game_id, ~r/0/) == false
       assert String.match?(game_id, ~r/O/) == false
     end
@@ -60,10 +60,9 @@ defmodule Dudo.GameServiceTest do
     assert GameService.exists?("does not exist") == false
   end
 
-  test "player_exists?" do
+  test "player_status" do
     game_id = GameService.new_game()
-    GameService.add_player(game_id, "exists")
-    assert GameService.player_exists?(game_id, "exists") == true
-    assert GameService.player_exists?(game_id, "does not exist") == false
+    GameService.add_player(game_id, "1", "Player 1")
+    assert GameService.player_status(game_id, "1", "Player 1") == :already_playing
   end
 end

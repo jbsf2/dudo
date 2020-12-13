@@ -12,8 +12,11 @@ defmodule DudoWeb.LoginControllerTest do
       conn = post(conn, "/login", login: %{player_name: "Player 1"})
 
       player_name = Plug.Conn.get_session(conn, "player_name")
+      player_id = Plug.Conn.get_session(conn, "player_id")
 
       assert player_name == "Player 1"
+      assert player_id != nil
+
       assert redirected_to(conn, 302) == "/welcome"
     end
 

@@ -17,15 +17,18 @@ defmodule Dudo.GameService do
     length(Registry.lookup(:game_id_registry, game_id)) > 0
   end
 
-  def player_exists?(game_id, player_name) do
-    state(game_id) |> Game.player_exists?(player_name)
+  def player_status(game_id, player_id, player_name) do
+    state(game_id) |> Game.player_status(player_id, player_name)
   end
 
   def state(game_id) do
     GenServer.call(via_tuple(game_id), :state)
   end
 
-  def add_player(game_id, player_name), do: call_and_broadcast(:add_player, game_id, player_name)
+  def add_player(game_id, player_id, player_name) do
+    call_and_broadcast(:add_player, game_id, {player_id, player_name})
+  end
+
   def add_dice(game_id, player_name), do: call_and_broadcast(:add_dice, game_id, player_name)
   def lose_dice(game_id, player_name), do: call_and_broadcast(:lose_dice, game_id, player_name)
   def shake_dice(game_id, player_name), do: call_and_broadcast(:shake_dice, game_id, player_name)
@@ -40,9 +43,9 @@ defmodule Dudo.GameService do
     )
   end
 
-  defp call_and_broadcast(action, game_id, player_name) do
-    game = GenServer.call(via_tuple(game_id), {action, player_name})
-    :ok = PubSub.broadcast(Dudo.PubSub, "game:#{game_id}", {action, game, player_name})
+  defp call_and_broadcast(action, game_id, arg) do
+    game = GenServer.call(via_tuple(game_id), {action, arg})
+    :ok = PubSub.broadcast(Dudo.PubSub, "game:#{game_id}", {action, game, arg})
     game
   end
 

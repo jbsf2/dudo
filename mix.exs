@@ -46,7 +46,8 @@ defmodule Dudo.MixProject do
       {:phoenix_live_view, "~> 0.14.7"},
       {:floki, ">= 0.27.0", only: :test},
       {:sweet_xml, ">= 0.6.6", only: :test},
-      {:dialyxir, only: :dev}
+      {:dialyxir, only: :dev},
+      { :uuid, "~> 1.1" }
     ]
   end
 

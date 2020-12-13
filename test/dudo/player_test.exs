@@ -39,7 +39,7 @@ defmodule Dudo.PlayerTest do
   end
 
   test "shake_dice" do
-    player = Player.new("Jill", 100)
+    player = Player.new("Jill", "Jill", 100)
     shaked = Player.shake_dice(player)
 
     assert player.dice != shaked.dice

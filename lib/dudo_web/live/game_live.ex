@@ -17,20 +17,20 @@ defmodule DudoWeb.GameLive do
 
   def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
       when connected? do
-    player_name = session |> Map.get("player_name")
+    player_id = session |> Map.get("player_id")
     :ok = DudoWeb.Endpoint.subscribe("game:#{game_id}")
-    {:ok, assigns(socket, game_id, player_name)}
+    {:ok, assigns(socket, game_id, player_id)}
   end
 
   def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
       when connected? == false do
-    player_name = session |> Map.get("player_name")
+    player_id = session |> Map.get("player_id")
     session_game_id = session |> Map.get("game_id")
 
     if !GameService.exists?(game_id) || game_id != session_game_id do
       {:ok, redirect(socket, to: game_path(socket, :show, game_id))}
     else
-      {:ok, assigns(socket, game_id, player_name)}
+      {:ok, assigns(socket, game_id, player_id)}
     end
   end
 
@@ -49,7 +49,7 @@ defmodule DudoWeb.GameLive do
 
     socket =
       socket
-      |> assigns(game_id, current_player.name)
+      |> assigns(game_id, current_player.id)
       |> assign(:new_game_link, new_game_link)
 
     {:noreply, socket}
@@ -58,21 +58,21 @@ defmodule DudoWeb.GameLive do
   def handle_event(action, _params, socket) do
     %{game_id: game_id, current_player: current_player} = socket.assigns
     fun = Map.get(@function_map, action)
-    fun.(game_id, current_player.name)
+    fun.(game_id, current_player.id)
 
-    {:noreply, assigns(socket, game_id, current_player.name)}
+    {:noreply, assigns(socket, game_id, current_player.id)}
   end
 
-  def handle_info({:shake_dice, game, player_name}, socket) do
+  def handle_info({:shake_dice, game, player_id}, socket) do
     socket =
       socket
-      |> push_event(:shake, %{player_name: player_name})
+      |> push_event(:shake, %{player_id: player_id})
       |> assign(:game, game)
 
     {:noreply, socket}
   end
 
-  def handle_info({_action, game, _player_name}, socket) do
+  def handle_info({_action, game, _player_id}, socket) do
     {:noreply, assign(socket, :game, game)}
   end
 
@@ -83,12 +83,12 @@ defmodule DudoWeb.GameLive do
     everyone_else_can_see: "The other players can see your dice"
   }
 
-  defp assigns(socket, game_id, current_player_name) do
+  defp assigns(socket, game_id, current_player_id) do
     game = GameService.state(game_id)
-    current_player = Game.find_player(game, current_player_name)
+    current_player = Game.find_player(game, current_player_id)
 
     current_player_dice_visibility =
-      game |> Game.current_player_dice_visibility(current_player_name)
+      game |> Game.current_player_dice_visibility(current_player_id)
 
     dice_visibility_message = @dice_visibility_messages |> Map.get(current_player_dice_visibility)
 

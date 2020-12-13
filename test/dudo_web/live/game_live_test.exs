@@ -10,7 +10,7 @@ defmodule DudoWeb.GameLiveTest do
 
     conn =
       conn
-      |> Plug.Test.init_test_session(player_name: "Player 1")
+      |> Plug.Test.init_test_session(player_id: "Player 1", player_name: "Player 1")
       |> post(Routes.game_path(conn, :create))
 
     %{id: game_id} = redirected_params(conn)
@@ -56,7 +56,7 @@ defmodule DudoWeb.GameLiveTest do
 
       conn =
         Phoenix.ConnTest.build_conn()
-        |> Phoenix.ConnTest.init_test_session(player_name: "Player 1")
+        |> Phoenix.ConnTest.init_test_session(player_id: "Player 1", player_name: "Player 1")
         |> get(live_path)
 
       assert redirected_to(conn, 302) == Routes.game_path(conn, :show, game_id)
@@ -92,7 +92,7 @@ defmodule DudoWeb.GameLiveTest do
 
     conn2 =
       conn2
-      |> Plug.Test.init_test_session(player_name: "Player 2")
+      |> Plug.Test.init_test_session(player_id: "Player 2", player_name: "Player 2")
       |> get(Routes.game_path(conn2, :show, game_id))
 
     assert redirected_to(conn2, 302) == Routes.live_path(conn2, DudoWeb.GameLive, game_id)
@@ -121,7 +121,7 @@ defmodule DudoWeb.GameLiveTest do
 
     conn2 =
       conn2
-      |> Plug.Test.init_test_session(player_name: "Player 2")
+      |> Plug.Test.init_test_session(player_id: "Player 2", player_name: "Player 2")
       |> get(Routes.game_path(conn2, :show, game_id))
 
     # step 2: connect both players via LiveView, make sure they have expected dice count

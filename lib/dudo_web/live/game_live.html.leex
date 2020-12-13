@@ -22,28 +22,28 @@
 
 <ul class="players">
     <%= for player <- @game.players do %>
-        <%= if @current_player.name == player.name do %>
+        <%= if @current_player.id == player.id do %>
         <li class="player current">
         <% else %>
         <li class="player">
         <% end %>
 
             <div class="player-name">
-                <%= if @current_player.name == player.name do %>
+                <%= if @current_player.id == player.id do %>
                 <div class="shim"></div>
                 <% end %>
                 <div class="actual-name"><%= player.name %></div>
             </div>
 
             <div class="dice-and-buttons">
-                <%= if @current_player.name == player.name do %>
+                <%= if @current_player.id == player.id do %>
                 <div class="dice-visibility-message">
                     <%= @dice_visibility_message %>
                 </div>
                 <% end %>
                 <div class="dice">
-                    <%= if Game.can_see_dice(@game, viewer: @current_player.name, dice_owner: player.name) do %>
-                    <ul id="dice-<%= player.name %>" class="dice" phx-hook="Dice">
+                    <%= if Game.can_see_dice(@game, viewer: @current_player.id, dice_owner: player.id) do %>
+                    <ul id="dice-<%= player.id %>" class="dice" phx-hook="Dice">
                         <%= for dice <- player.dice do %>
                         <li class="dice d<%= dice %>">
                             <%= for _dots <- 1..dice do %>
@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="buttons">
-                <%= if player.name == @current_player.name do %>
+                <%= if player.id == @current_player.id do %>
                     <div>
                     <%= if @current_player.player_can_see_dice == false do %>
                         <%= form_for :dice, "#", [phx_submit: :see_dice], fn _ -> %>

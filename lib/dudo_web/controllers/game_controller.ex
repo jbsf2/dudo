@@ -26,20 +26,20 @@ defmodule DudoWeb.GameController do
   def show(conn, _params) do
     %{path_params: %{"id" => game_id}} = conn
     player_name = get_session(conn, :player_name)
+    player_id = get_session(conn, :player_id)
 
-    if !GameService.player_exists?(game_id, player_name) do
-      # new player; add them to the game
-      GameService.add_player(game_id, player_name)
-
-      conn
-      |> put_session(:game_id, game_id)
-      |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
-    else
-      if game_id == get_session(conn, :game_id) do
-        # returning player; admit them to the game
+    case GameService.player_status(game_id, player_id, player_name) do
+      :already_playing ->
         conn |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
-      else
-        # player name collision; direct player to provide a different name
+
+      :not_playing ->
+        GameService.add_player(game_id, player_id, player_name)
+
+        conn
+        |> put_session(:game_id, game_id)
+        |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
+
+      :name_collision ->
         conn
         |> put_flash(
           :info,
@@ -47,12 +47,11 @@ defmodule DudoWeb.GameController do
         )
         |> put_session(:after_login_redirect_path, Routes.game_path(conn, :show, game_id))
         |> redirect(to: Routes.login_path(conn, :new))
-      end
     end
   end
 
   def check_login(conn, opts) do
-    if get_session(conn, :player_name) == nil do
+    if get_session(conn, :player_id) == nil do
       conn
       |> put_flash(:info, "Enter your name to join the game!")
       |> put_session(:after_login_redirect_path, opts.after_login_redirect_path.(conn))
