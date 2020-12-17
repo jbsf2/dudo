@@ -18,6 +18,7 @@ defmodule DudoWeb.GameLive do
   def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
       when connected? do
     player_id = session |> Map.get("player_id")
+
     :ok = DudoWeb.Endpoint.subscribe("game:#{game_id}")
     {:ok, assigns(socket, game_id, player_id)}
   end
@@ -25,9 +26,9 @@ defmodule DudoWeb.GameLive do
   def mount(%{"id" => game_id}, session, %Socket{connected?: connected?} = socket)
       when connected? == false do
     player_id = session |> Map.get("player_id")
-    session_game_id = session |> Map.get("game_id")
+    player_name = session |> Map.get("player_name")
 
-    if !GameService.exists?(game_id) || game_id != session_game_id do
+    if !already_playing?(game_id, player_id, player_name) do
       {:ok, redirect(socket, to: game_path(socket, :show, game_id))}
     else
       {:ok, assigns(socket, game_id, player_id)}
@@ -101,5 +102,10 @@ defmodule DudoWeb.GameLive do
     |> assign(:current_player, current_player)
     |> assign(:dice_visibility_message, dice_visibility_message)
     |> assign(:new_game_link, new_game_link)
+  end
+
+  defp already_playing?(game_id, player_id, player_name) do
+    GameService.exists?(game_id) &&
+    GameService.player_status(game_id, player_id, player_name) == :already_playing
   end
 end

@@ -15,7 +15,6 @@ defmodule DudoWeb.GameController do
 
   def create(conn, _params) do
     game_id = GameService.new_game()
-
     conn |> redirect(to: Routes.game_path(conn, :show, game_id))
   end
 
@@ -34,10 +33,7 @@ defmodule DudoWeb.GameController do
 
       :not_playing ->
         GameService.add_player(game_id, player_id, player_name)
-
-        conn
-        |> put_session(:game_id, game_id)
-        |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
+        conn |> redirect(to: Routes.live_path(conn, DudoWeb.GameLive, game_id))
 
       :name_collision ->
         conn
@@ -67,7 +63,7 @@ defmodule DudoWeb.GameController do
 
     if !GameService.exists?(game_id) do
       conn
-      |> delete_session(:game_id)
+      |> delete_session(:after_login_redirect_path)
       |> put_flash(
         :info,
         "Oops! Looks like that game is over. Join a different one or start a new one."
@@ -75,7 +71,7 @@ defmodule DudoWeb.GameController do
       |> redirect(to: welcome_path(conn))
       |> halt
     else
-      conn
+      conn |> delete_session(:after_login_redirect_path)
     end
   end
 

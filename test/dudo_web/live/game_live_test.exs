@@ -19,7 +19,7 @@ defmodule DudoWeb.GameLiveTest do
 
     live_path = redirected_to(conn, 302)
 
-    {:ok, conn: conn, live_path: live_path}
+    {:ok, conn: conn, live_path: live_path, game_id: game_id}
   end
 
   describe "mount" do
@@ -48,15 +48,14 @@ defmodule DudoWeb.GameLiveTest do
       assert redirect_path == Routes.game_path(conn, :show, "does not exist")
     end
 
-    test "it redirects if the player doesn't have the game_id in their session", %{
-      conn: conn,
-      live_path: live_path
+    test "it redirects for games the player doesn't belong to", %{
+      live_path: live_path,
+      game_id: game_id
     } do
-      game_id = get_session(conn, :game_id)
 
       conn =
         Phoenix.ConnTest.build_conn()
-        |> Phoenix.ConnTest.init_test_session(player_id: "Player 1", player_name: "Player 1")
+        |> Phoenix.ConnTest.init_test_session(player_id: "Player 2", player_name: "Player 2")
         |> get(live_path)
 
       assert redirected_to(conn, 302) == Routes.game_path(conn, :show, game_id)
@@ -83,11 +82,10 @@ defmodule DudoWeb.GameLiveTest do
 
   test "updating the other players when a player changes the game state", %{
     conn: conn1,
-    live_path: live_path
+    live_path: live_path,
+    game_id: game_id
   } do
     # step 1: have a second player join the game
-    # live_path will look like "/games/ABCD/play"
-    game_id = String.slice(live_path, 7..10)
     conn2 = Phoenix.ConnTest.build_conn()
 
     conn2 =
@@ -113,9 +111,11 @@ defmodule DudoWeb.GameLiveTest do
     assert render(view2) |> dice_count() == 9
   end
 
-  test "other players can see dice after show", %{conn: conn1, live_path: live_path} do
-    # live_path will look like "/games/ABCD/play"
-    game_id = String.slice(live_path, 7..10)
+  test "other players can see dice after show", %{
+    conn: conn1,
+    live_path: live_path,
+    game_id: game_id
+  } do
 
     conn2 = Phoenix.ConnTest.build_conn()
 
