@@ -1,36 +1,36 @@
 FROM elixir:1.10.4-alpine AS build
 
-# # install build dependencies
-# RUN apk add --no-cache build-base npm git python
+# install build dependencies
+RUN apk add --no-cache build-base npm git python
 
-# # prepare build dir
-# WORKDIR /app
+# prepare build dir
+WORKDIR /app
 
-# # install hex + rebar
-# RUN mix local.hex --force && \
-#     mix local.rebar --force
+# install hex + rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-# # set build ENV
-# ENV MIX_ENV=prod
+# set build ENV
+ENV MIX_ENV=prod
 
-# # install mix dependencies
-# COPY mix.exs mix.lock ./
-# COPY config config
-# RUN mix do deps.get, deps.compile
+# install mix dependencies
+COPY mix.exs mix.lock ./
+COPY config config
+RUN mix do deps.get, deps.compile
 
-# # build assets
-# COPY assets/package.json assets/package-lock.json ./assets/
-# RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
+# build assets
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 
-# COPY priv priv
-# COPY assets assets
-# RUN npm run --prefix ./assets deploy
-# RUN mix phx.digest
+COPY priv priv
+COPY assets assets
+RUN npm run --prefix ./assets deploy
+RUN mix phx.digest
 
-# # compile and build release
-# COPY lib lib
-# # uncomment COPY if rel/ exists
-# # COPY rel rel
+# compile and build release
+COPY lib lib
+# uncomment COPY if rel/ exists
+# COPY rel rel
 ENV SECRET_KEY_BASE=hjz+I5+ZAsuCps3z3bopSuNf40OC6eVpXWk35Dehul7vZG5SUxtFgB1XlRsxnoZv
 RUN mix do compile, release
 
