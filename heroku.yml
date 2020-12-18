@@ -1,6 +1,0 @@
-build:
-  docker:
-    web: Dockerfile
-  config:
-    MIX_ENV: prod
-    SECRET_KEY_BASE: "hjz+I5+ZAsuCps3z3bopSuNf40OC6eVpXWk35Dehul7vZG5SUxtFgB1XlRsxnoZv"
