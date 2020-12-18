@@ -2,6 +2,7 @@ defmodule DudoWeb.LoginController do
   use DudoWeb, :controller
 
   def new(conn, _params) do
+    IO.puts("LoginController new")
     render(conn, "new.html")
   end
 
