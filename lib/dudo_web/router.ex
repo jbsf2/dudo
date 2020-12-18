@@ -17,6 +17,7 @@ defmodule DudoWeb.Router do
   scope "/", DudoWeb do
     pipe_through :browser
 
+    get "/", RootController, :show
     get "/login", LoginController, :new
     post "/login", LoginController, :create
     get "/welcome", WelcomeController, :show

@@ -24,7 +24,7 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let Hooks = {}
 Hooks.Dice = {
     mounted(){
-       this.handleEvent("shake", ({}) => window.playShakeAudio())
+      this.handleEvent("shake", ({}) => window.playShakeAudio())
     }
   }
 

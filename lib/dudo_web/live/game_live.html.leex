@@ -58,7 +58,7 @@
                         <% end %>
                     </ul>
                     <% else %>
-                    <ul class="dice">
+                    <ul id="dice-<%= player.id %>" class="dice" phx-hook="Dice">
                         <%= for _dice <- player.dice do %>
                         <li class="dice hidden"></li>
                         <% end %>

@@ -2,14 +2,14 @@
 <div class="welcome">
     <h2>Welcome, <%= @player_name %>!</h2>
 
+    <%= form_for @conn, Routes.game_path(@conn, :create), fn _ -> %>
+        <%= submit "Start a new game" %>
+    <% end %>
+
     <%= form_for @conn, Routes.game_path(@conn, :join), [as: :game],fn f -> %>
-        <div>Enter a game code:</div>
+        <div>Or enter a game code:</div>
         <%= text_input f, :id %>
         <%= submit "Go" %>
     <% end %>
 
-    <%= form_for @conn, Routes.game_path(@conn, :create), fn _ -> %>
-        <div>Or:</div>
-        <%= submit "Start a new game" %>
-    <% end %>
 </div>
