@@ -31,7 +31,7 @@ defmodule DudoWeb.GameLiveTest do
 
     test "redirected mount", %{conn: conn, live_path: live_path} do
       {:ok, _view, html} = live(conn, live_path)
-      assert html =~ "<div class=\"actual-name\">Player 1</div>"
+      assert html =~ "class=\"actual-name\">Player 1<"
     end
 
     test "redirect when user not logged in" do

@@ -32,11 +32,11 @@
                 <%= if @current_player.id == player.id do %>
                 <div class="shim"></div>
                 <% end %>
-                <div class="actual-name">
+                <div>
                     <%= if !player.player_can_see_dice do %>
                         <%= img_tag "/images/blindfold.png", class: "blindfold" %>
                     <% end %>
-                    <span><%= player.name %></span>
+                    <span class="actual-name"><%= player.name %></span>
                 </div>
             </div>
 
