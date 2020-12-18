@@ -21,6 +21,11 @@ defmodule Dudo.GameService do
     state(game_id) |> Game.player_status(player_id, player_name)
   end
 
+  def already_playing?(game_id, player_id, player_name) do
+    exists?(game_id) &&
+    player_status(game_id, player_id, player_name) == :already_playing
+  end
+
   def state(game_id) do
     GenServer.call(via_tuple(game_id), :state)
   end

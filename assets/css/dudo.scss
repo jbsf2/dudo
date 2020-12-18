@@ -57,6 +57,16 @@ div.player-name {
     min-width: 15rem;
 }
 
+div.player-name img.blindfold {
+    height: 3rem;
+    width: 3rem;
+    vertical-align: middle;
+    margin-left: 3rem;
+    margin-top: 1.8rem;
+    float: left;
+    clear: left;
+}
+
 div.player-name .shim {
     height: 3.2rem;
 }
