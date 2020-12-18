@@ -48,4 +48,4 @@ COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/dudoweb ./
 
 ENV HOME=/app
 
-CMD ["bin/dudo_web", "start"]
+CMD ["bin/dudoweb", "start"]
