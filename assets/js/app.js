@@ -42,32 +42,28 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 window.handleShake = function(params) {
-  console.log("playing audio")
-  console.log(params)
   document.getElementById("dice-audio").play()
   window.shakeDice(params.player_id)
 }
 
 window.shakeDice = function(playerID) {
   var dice = document.querySelectorAll("ul#dice-" + playerID + " li.dice")
-  console.log(dice)
+  const shakeClasses = ["shake-slow", "shake-slow-2", "shake-slow-3"]
   dice.forEach(function(d) {
     var startDelay = Math.random() * 200
     var endDelay = 1000 + (Math.random() * 500)
-    console.log(startDelay)
-    console.log(endDelay)
-    window.shakeSingleDice(d, startDelay, endDelay)
+    var shakeClass = shakeClasses[Math.floor(Math.random() * 3)]
+    window.shakeSingleDice(d, shakeClass, startDelay, endDelay)
   })
 }
 
-window.shakeSingleDice = function(element, startDelay, endDelay) {
+window.shakeSingleDice = function(element, shakeClass, startDelay, endDelay) {
   setTimeout(function() {
-    console.log("adding class")
-    element.classList.add("shake-slow")
+    element.classList.add(shakeClass)
   }, startDelay)
 
   setTimeout(function() {
-    element.classList.remove("shake-slow")
+    element.classList.remove(shakeClass)
   }, endDelay)
 
 }
