@@ -24,7 +24,7 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let Hooks = {}
 Hooks.Dice = {
     mounted(){
-      this.handleEvent("shake", ({}) => window.playShakeAudio())
+      this.handleEvent("shake", (params) => window.handleShake(params))
     }
   }
 
@@ -41,7 +41,33 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
-window.playShakeAudio = function() {
-    console.log("playing audio")
-    document.getElementById("dice-audio").play()
+window.handleShake = function(params) {
+  console.log("playing audio")
+  console.log(params)
+  document.getElementById("dice-audio").play()
+  window.shakeDice(params.player_id)
+}
+
+window.shakeDice = function(playerID) {
+  var dice = document.querySelectorAll("ul#dice-" + playerID + " li.dice")
+  console.log(dice)
+  dice.forEach(function(d) {
+    var startDelay = Math.random() * 200
+    var endDelay = 1000 + (Math.random() * 500)
+    console.log(startDelay)
+    console.log(endDelay)
+    window.shakeSingleDice(d, startDelay, endDelay)
+  })
+}
+
+window.shakeSingleDice = function(element, startDelay, endDelay) {
+  setTimeout(function() {
+    console.log("adding class")
+    element.classList.add("shake-slow")
+  }, startDelay)
+
+  setTimeout(function() {
+    element.classList.remove("shake-slow")
+  }, endDelay)
+
 }
