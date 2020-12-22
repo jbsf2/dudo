@@ -28,6 +28,18 @@ Hooks.Dice = {
     }
   }
 
+Hooks.Button = {
+  updated() {
+    var button = this.el.querySelector("button")
+    var el = this.el;
+
+    setTimeout(function() {
+      button.remove()
+      el.appendChild(button)
+    }, 100)
+  }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}, hooks: Hooks})
 
 // Connect if there are any LiveViews on the page

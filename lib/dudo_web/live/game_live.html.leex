@@ -1,6 +1,6 @@
 
 <div>
-<div class="topmargin">
+<div id="topmargin" class="topmargin">
     <%= if length(@game.players) == 1 do %>
         <div class="invitation-link">There are no other players in the game. Invite players with this link: <%= link @invitation_link, to: @invitation_link %></div>
     <% else %>
@@ -89,14 +89,14 @@
                     <% end %>
                     </div>
                     <div>
-                    <%= form_for :dice, "#", [phx_submit: :lose_dice], fn _ -> %>
+                    <%= form_for :dice, "#", [phx_submit: :lose_dice, id: "lose-form-#{player.id}", phx_hook: "Button"], fn _ -> %>
                         <input name="_method" type="hidden" value="delete" />
-                        <%= submit "Lose a dice" %>
+                        <%= submit "Lose a dice"%>
                     <% end %>
-                    <%= form_for :dice, "#", [phx_submit: :add_dice], fn _ -> %>
+                    <%= form_for :dice, "#", [phx_submit: :add_dice, id: "add-form-#{player.id}", phx_hook: "Button"], fn _ -> %>
                         <%= submit "Win a dice" %>
                     <% end %>
-                    <%= form_for :dice, "#", [phx_submit: :shake_dice], fn _ -> %>
+                    <%= form_for :dice, "#", [phx_submit: :shake_dice, id: "shake-form-#{player.id}", phx_hook: "Button"], fn _ -> %>
                         <%= submit "Shake dice", class: "shake-dice" %>
                     <% end %>
                     </div>

@@ -16,7 +16,6 @@ defmodule Dudo.Game do
     %Dudo.Game{}
   end
 
-
   @spec add_player(t(), {String.t(), String.t()}) :: t()
   def add_player(game, {player_id, player_name}) do
     new_player = Player.new(player_id, player_name)
